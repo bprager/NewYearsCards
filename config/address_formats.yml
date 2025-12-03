@@ -1,0 +1,24 @@
+default:
+  lines:
+    - "{prefix} {first_name} {last_name}"
+    - "{address1}"
+    - "{address2}"
+    - "{zip} {city}"
+    - "{country}"
+
+DE:
+  lines:
+    - "{prefix} {last_name}"
+    - "{address1}"
+    - "{address2}"
+    - "{zip} {city}"
+    - "Germany"
+
+FR:
+  lines:
+    - "{prefix} {first_name} {last_name}"
+    - "{address1}"
+    - "{address2}"
+    - "{zip} {city}"
+    - "France"
+
