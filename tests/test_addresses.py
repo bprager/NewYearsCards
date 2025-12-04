@@ -80,7 +80,10 @@ def test_build_address_lines_various_countries():
         "country": "",  # inferred by state
     }
     lines_us = addresses.build_address_lines(us_row, templates)
-    assert lines_us[-1] == "UNITED STATES"
+    # With a dedicated US template, the last line is city/state/zip, uppercased
+    assert lines_us[-1] == "LOS ANGELES CA 90036"
+    # No country line for US domestic addresses
+    assert all("UNITED STATES" not in line for line in lines_us)
 
 
 def test_transform_and_build_labels_end_to_end(tmp_path):
@@ -137,8 +140,26 @@ def test_transform_and_build_labels_end_to_end(tmp_path):
     assert content[0].startswith("Prefix,FirstName,LastName,Country,Line1,Line2")
     # Germany row should end with Germany
     assert ",Germany," in content[1]
-    # US row inferred by state
+    # US row inferred by state (Country column remains title case)
     assert ",United States," in content[2]
+
+
+def test_default_template_uppercases_only_country():
+    templates = addresses.load_templates(Path("config/address_formats.yml"))
+    row = {
+        "prefix": "Sr.",
+        "first_name": "Juan",
+        "last_name": "Pérez",
+        "address1": "Carrer Major 1",
+        "address2": "",
+        "city": "Barcelona",
+        "zip": "08001",
+        "country": "Spain",
+    }
+    lines = addresses.build_address_lines(row, templates)
+    # Default template uppercases only the final country line
+    assert lines[-1] == "SPAIN"
+    assert any("08001 Barcelona" in line for line in lines)
 
 
 def test_transform_skips_empty_rows(tmp_path):
