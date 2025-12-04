@@ -16,7 +16,7 @@ def cmd_download(args: argparse.Namespace) -> int:
     Imports the google client lazily so other commands don't need those deps.
     """
     try:
-        from .sheets import download_sheet  # type: ignore
+        from .sheets import download_sheet
     except Exception as e:
         print(
             "Error: google auth dependencies are missing for download command",

@@ -5,7 +5,7 @@ import sys
 from urllib.parse import parse_qs, urlparse
 
 try:
-    from dotenv import load_dotenv  # type: ignore
+    from dotenv import load_dotenv
 except Exception:
     def load_dotenv(*_args, **_kwargs):  # type: ignore
         return False
@@ -63,8 +63,8 @@ def main() -> None:
 
     # Lazy import Google libs so simply importing this module doesn't require them
     try:
-        from google.auth.transport.requests import AuthorizedSession  # type: ignore
-        from google.oauth2 import service_account  # type: ignore
+        from google.auth.transport.requests import AuthorizedSession
+        from google.oauth2 import service_account
     except Exception as e:  # pragma: no cover
         print("Error: Google libraries are required for downloading the sheet.", file=sys.stderr)
         print(str(e), file=sys.stderr)

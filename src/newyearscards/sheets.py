@@ -6,7 +6,7 @@ import re
 from urllib.parse import parse_qs, urlparse
 
 try:
-    from dotenv import load_dotenv  # type: ignore
+    from dotenv import load_dotenv
 except Exception:  # pragma: no cover
 
     def load_dotenv(*_args, **_kwargs):  # type: ignore
@@ -60,8 +60,8 @@ def download_sheet(
     spreadsheet_id, gid = extract_ids(sheet_url)
 
     # Import heavy google deps lazily to keep module import light for tests
-    from google.auth.transport.requests import AuthorizedSession  # type: ignore
-    from google.oauth2 import service_account  # type: ignore
+    from google.auth.transport.requests import AuthorizedSession
+    from google.oauth2 import service_account
 
     key_path = paths.key_path
     if not key_path.exists():

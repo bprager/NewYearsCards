@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 
 try:
-    from dotenv import load_dotenv  # type: ignore
+    from dotenv import load_dotenv
 except Exception:  # pragma: no cover - optional dependency at runtime
     def load_dotenv(*_args, **_kwargs):  # type: ignore
         return False

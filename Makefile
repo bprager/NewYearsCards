@@ -14,7 +14,7 @@ help:
 	@echo "  typecheck       Run mypy on source"
 	@echo "  lint            Run Ruff if available (optional)"
 	@echo "  format          Run Ruff formatter if available (optional)"
-	@echo "  check           Typecheck + tests (no lint)"
+	@echo "  check           Lint + typecheck + tests"
 	@echo "  release-notes   Generate release notes from CHANGELOG (VERSION=...)"
 	@echo "  run-download    Run CLI download without install (YEAR=YYYY)"
 	@echo "  run-build       Run CLI build-labels without install (YEAR=YYYY)"
@@ -47,7 +47,7 @@ format:
 		echo "skipping format"; \
 	fi
 
-check: typecheck test
+check: lint typecheck test
 
 release-notes:
 	@[ -n "$(VERSION)" ] || (echo "Error: VERSION is required, e.g. make release-notes VERSION=0.2.1"; exit 1)
