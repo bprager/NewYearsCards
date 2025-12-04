@@ -9,8 +9,10 @@ from urllib.parse import urlparse, parse_qs
 try:
     from dotenv import load_dotenv  # type: ignore
 except Exception:  # pragma: no cover
+
     def load_dotenv(*_args, **_kwargs):  # type: ignore
         return False
+
 
 from .config import load_paths, ensure_dir
 
@@ -42,7 +44,9 @@ def extract_ids(sheet_url: str) -> Tuple[str, str]:
     return spreadsheet_id, gid
 
 
-def download_sheet(year: int, *, sheet_url: Optional[str] = None, out_path: Optional[Path] = None) -> Path:
+def download_sheet(
+    year: int, *, sheet_url: Optional[str] = None, out_path: Optional[Path] = None
+) -> Path:
     """
     Download the specified Google Sheet as CSV via service-account credentials.
     Saves to data/raw/<year>/mailing_list.csv by default.
@@ -70,11 +74,9 @@ def download_sheet(year: int, *, sheet_url: Optional[str] = None, out_path: Opti
     )
     authed_session = AuthorizedSession(creds)
 
-    export_url = (
-        f"https://docs.google.com/spreadsheets/d/{spreadsheet_id}/export?format=csv&gid={gid}"
-    )
+    export_url = f"https://docs.google.com/spreadsheets/d/{spreadsheet_id}/export?format=csv&gid={gid}"
 
-    resp = authed_session.get(export_url)
+    resp = authed_session.get(export_url, timeout=30)
     resp.raise_for_status()
 
     if out_path is None:

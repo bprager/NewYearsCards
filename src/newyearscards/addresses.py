@@ -7,7 +7,7 @@ from typing import Dict, Iterable, List, Tuple
 
 try:
     import yaml  # type: ignore
-except Exception:  # pragma: no cover
+except ImportError:  # pragma: no cover
     yaml = None  # type: ignore
 
 from .config import load_paths, ensure_dir
@@ -43,7 +43,57 @@ NORMALIZE_MAP: Dict[str, str] = {
 
 
 US_STATE_ABBR = {
-    "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY","DC"
+    "AL",
+    "AK",
+    "AZ",
+    "AR",
+    "CA",
+    "CO",
+    "CT",
+    "DE",
+    "FL",
+    "GA",
+    "HI",
+    "ID",
+    "IL",
+    "IN",
+    "IA",
+    "KS",
+    "KY",
+    "LA",
+    "ME",
+    "MD",
+    "MA",
+    "MI",
+    "MN",
+    "MS",
+    "MO",
+    "MT",
+    "NE",
+    "NV",
+    "NH",
+    "NJ",
+    "NM",
+    "NY",
+    "NC",
+    "ND",
+    "OH",
+    "OK",
+    "OR",
+    "PA",
+    "RI",
+    "SC",
+    "SD",
+    "TN",
+    "TX",
+    "UT",
+    "VT",
+    "VA",
+    "WA",
+    "WV",
+    "WI",
+    "WY",
+    "DC",
 }
 
 
@@ -90,7 +140,6 @@ def load_templates(path: Path) -> Dict[str, Dict[str, List[str]]]:
             in_lines = True
             continue
         if in_lines and line.strip().startswith("- "):
-            # Extract quoted content
             item = line.strip()[2:].strip()
             if item and item[0] in {'"', "'"} and item[-1] == item[0]:
                 item = item[1:-1]
@@ -116,7 +165,9 @@ def infer_country(row: Dict[str, str]) -> Tuple[str, str]:
     return (raw or "", raw or "")
 
 
-def build_address_lines(row: Dict[str, str], templates: Dict[str, Dict[str, List[str]]]) -> List[str]:
+def build_address_lines(
+    row: Dict[str, str], templates: Dict[str, Dict[str, List[str]]]
+) -> List[str]:
     code, display_country = infer_country(row)
     tmpl = templates.get(code, templates.get("default"))
     if not tmpl or "lines" not in tmpl:
@@ -147,7 +198,9 @@ def build_address_lines(row: Dict[str, str], templates: Dict[str, Dict[str, List
     return out
 
 
-def transform_rows(rows: Iterable[Dict[str, str]], templates: Dict[str, Dict[str, List[str]]]) -> List[Dict[str, str]]:
+def transform_rows(
+    rows: Iterable[Dict[str, str]], templates: Dict[str, Dict[str, List[str]]]
+) -> List[Dict[str, str]]:
     output: List[Dict[str, str]] = []
     for row in rows:
         # Skip if clearly empty
@@ -190,7 +243,7 @@ def build_labels(in_csv: Path, out_csv: Path | None = None) -> Path:
         rows: List[Dict[str, str]] = []
         for raw_row in reader:
             row_dict: Dict[str, str] = {}
-            for i, val in enumerate(raw_row[: len(headers) ]):
+            for i, val in enumerate(raw_row[: len(headers)]):
                 row_dict[headers[i]] = val.strip()
             rows.append(row_dict)
 
@@ -201,7 +254,9 @@ def build_labels(in_csv: Path, out_csv: Path | None = None) -> Path:
         try:
             year = int(in_csv.parent.name)
         except ValueError:
-            raise ValueError("Cannot infer year from input path; please provide output path")
+            raise ValueError(
+                "Cannot infer year from input path; please provide output path"
+            )
         target_dir = paths.processed_dir(year)
         ensure_dir(target_dir)
         out_csv = target_dir / "labels_for_mailmerge.csv"

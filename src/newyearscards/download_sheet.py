@@ -4,9 +4,9 @@ import re
 import sys
 from urllib.parse import urlparse, parse_qs
 
-from dotenv import load_dotenv
-from google.oauth2 import service_account
-from google.auth.transport.requests import AuthorizedSession
+from dotenv import load_dotenv  # type: ignore[import-not-found]
+from google.oauth2 import service_account  # type: ignore[import-not-found]
+from google.auth.transport.requests import AuthorizedSession  # type: ignore[import-not-found]
 
 
 KEY_PATH = "Keys/google-sheet-key.json"
@@ -84,4 +84,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 import types
 from pathlib import Path
 
@@ -18,8 +19,32 @@ def test_cli_build_labels_dry_run(tmp_path, capsys):
     input_csv = tmp_path / "mailing_list.csv"
     with input_csv.open("w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["Prefix", "First Name", "Last Name", "Address 1", "Address 2", "City", "State", "Zip Code", "Country"])
-        w.writerow(["Fam.", "Frank", "Prager", "Satower Str. 26", "", "Stäbelow", "", "18198", "Germany"])
+        w.writerow(
+            [
+                "Prefix",
+                "First Name",
+                "Last Name",
+                "Address 1",
+                "Address 2",
+                "City",
+                "State",
+                "Zip Code",
+                "Country",
+            ]
+        )
+        w.writerow(
+            [
+                "Fam.",
+                "Frank",
+                "Prager",
+                "Satower Str. 26",
+                "",
+                "Stäbelow",
+                "",
+                "18198",
+                "Germany",
+            ]
+        )
 
     code = run_cli(["build-labels", "--input", str(input_csv), "--dry-run"])
     assert code == 0
@@ -46,7 +71,7 @@ def test_cli_download_uses_mocked_sheets_module(tmp_path, monkeypatch, capsys):
     fake.download_sheet = fake_download_sheet  # type: ignore[attr-defined]
 
     # Register fake module so cli can import it
-    monkeypatch.setitem(builtins.__dict__["__import__"]("sys").modules, "newyearscards.sheets", fake)
+    monkeypatch.setitem(sys.modules, "newyearscards.sheets", fake)
 
     out_dir = tmp_path / "raw"
     code = run_cli(["download", "--year", "2030", "--out", str(out_dir)])
@@ -57,4 +82,3 @@ def test_cli_download_uses_mocked_sheets_module(tmp_path, monkeypatch, capsys):
     # If a directory was provided, the CLI appends mailing_list.csv
     expected = out_dir / "mailing_list.csv"
     assert expected.exists()
-

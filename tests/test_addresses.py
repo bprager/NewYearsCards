@@ -100,8 +100,28 @@ def test_transform_and_build_labels_end_to_end(tmp_path):
         "Country",
     ]
     rows = [
-        ["Fam.", "Frank", "Prager", "Satower Str. 26", "", "Stäbelow", "", "18198", "Germany"],
-        ["Family", "Brian", "Vary", "5669 W. 6th St.", "", "Los Angeles", "CA", "90036", ""],
+        [
+            "Fam.",
+            "Frank",
+            "Prager",
+            "Satower Str. 26",
+            "",
+            "Stäbelow",
+            "",
+            "18198",
+            "Germany",
+        ],
+        [
+            "Family",
+            "Brian",
+            "Vary",
+            "5669 W. 6th St.",
+            "",
+            "Los Angeles",
+            "CA",
+            "90036",
+            "",
+        ],
     ]
     with input_csv.open("w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
@@ -126,9 +146,29 @@ def test_transform_skips_empty_rows(tmp_path):
     input_csv.parent.mkdir(parents=True)
     with input_csv.open("w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["Prefix", "First Name", "Last Name", "Address 1", "Address 2", "City", "Country"])
+        w.writerow(
+            [
+                "Prefix",
+                "First Name",
+                "Last Name",
+                "Address 1",
+                "Address 2",
+                "City",
+                "Country",
+            ]
+        )
         w.writerow(["", "", "", "", "", "", ""])  # empty
-        w.writerow(["", "Guillaume", "Martin", "919 Chemin", "", "Saint Rémy de Provence", "France"])  # valid
+        w.writerow(
+            [
+                "",
+                "Guillaume",
+                "Martin",
+                "919 Chemin",
+                "",
+                "Saint Rémy de Provence",
+                "France",
+            ]
+        )  # valid
 
     out = addresses.build_labels(input_csv)
     lines = out.read_text(encoding="utf-8").splitlines()
@@ -138,11 +178,16 @@ def test_transform_skips_empty_rows(tmp_path):
 
 def test_infer_country_variants_and_default():
     # Variants for Germany
-    for val in ["DE", "Deutschland", "germany"]:
+    # Test known country code
+    code, name = addresses.infer_country({"country": "DE"})
+    assert code == "DE"
+    assert name == "Germany"
+
+    # Test German variants (if supported)
+    for val in ["Deutschland", "germany"]:
         code, name = addresses.infer_country({"country": val})
-        assert code == "DE" or code == ""  # allow default path for unknown mapping
-        if code == "DE":
-            assert name == "Germany"
+        assert code == "DE"
+        assert name == "Germany"
 
     # French Polynesia should pass through using default template
     code, name = addresses.infer_country({"country": "French Polynesia"})
@@ -150,7 +195,14 @@ def test_infer_country_variants_and_default():
 
 
 def test_normalize_headers_with_extra_columns():
-    raw = ["First Name", "Last Name", "Address 1", "Some Extra Col", "Zip Code", "Country"]
+    raw = [
+        "First Name",
+        "Last Name",
+        "Address 1",
+        "Some Extra Col",
+        "Zip Code",
+        "Country",
+    ]
     norm = addresses.normalize_headers(raw)
     # Extra column should be carried through in lowercase canonical form
     assert norm[3] == "some extra col"
