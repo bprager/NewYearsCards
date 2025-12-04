@@ -47,7 +47,15 @@ format:
 		echo "skipping format"; \
 	fi
 
-check: lint typecheck test
+check:
+	@echo "==> Ruff lint"
+	@$(MAKE) --no-print-directory lint
+	@echo
+	@echo "==> Mypy typecheck"
+	@$(MAKE) --no-print-directory typecheck
+	@echo
+	@echo "==> Pytest"
+	@$(MAKE) --no-print-directory test
 
 release-notes:
 	@[ -n "$(VERSION)" ] || (echo "Error: VERSION is required, e.g. make release-notes VERSION=0.2.1"; exit 1)
