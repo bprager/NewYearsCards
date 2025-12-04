@@ -53,3 +53,16 @@ If `--url` is omitted, `SHEET_URL` from `.env` is used. If paths are omitted, de
 - `.env`:
   - `SHEET_URL="https://docs.google.com/spreadsheets/d/<id>/edit#gid=0"`
   - Optional: `RAW_DATA_DIR`, `PROCESSED_DATA_DIR`, `ADDRESS_TEMPLATES`
+
+## Contributing
+
+- Install dev tools (pytest, mypy):
+  - pip: `pip install -e .[dev]`
+  - uv: `uv pip install -e .[dev]`
+- Run tests:
+  - `pytest`
+- Type-check with mypy:
+  - `mypy src/newyearscards`
+  - or with uv: `uv run mypy src/newyearscards`
+- Quick CLI help during development:
+  - `PYTHONPATH=src python -m newyearscards.cli --help`
