@@ -65,6 +65,8 @@ def test_build_address_lines_various_countries():
     }
     lines_fr = addresses.build_address_lines(fr_row, templates)
     assert lines_fr[-1] == "FRANCE"
+    # With uppercase_last_n_lines=2 for FR, the zip+city line should be uppercased
+    assert any("13210 SAINT RÉMY DE PROVENCE" in line for line in lines_fr)
 
     us_row = {
         "prefix": "Family",
