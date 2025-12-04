@@ -84,6 +84,13 @@ If `--url` is omitted, `SHEET_URL` from `.env` is used. If paths are omitted, de
   
 Note: The dev extra also installs Ruff for linting/formatting.
 
+### Coverage
+
+- Install dev extras first (includes `pytest-cov`):
+  - `pip install -e .[dev]` or `uv pip install -e .[dev]`
+- Run coverage:
+  - `make coverage` (shows per-file, missing lines)
+
 ### Makefile shortcuts
 
 - `make dev-install` – install dev extras (pytest, mypy)

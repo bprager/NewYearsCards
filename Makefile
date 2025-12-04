@@ -29,6 +29,13 @@ test:
 	pytest -q
 
 coverage:
+	@# Ensure pytest-cov is installed
+	@$(PYTHON) -c "import pytest_cov" >/dev/null 2>&1 || { \
+		echo "pytest-cov not installed. Install dev extras first:"; \
+		echo "  pip install -e .[dev]"; \
+		echo "  or: uv pip install -e .[dev]"; \
+		exit 2; \
+	}
 	pytest --cov=$(SRC) --cov-report=term-missing -q
 
 typecheck:
