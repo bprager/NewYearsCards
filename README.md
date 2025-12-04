@@ -2,6 +2,15 @@
 
 Annual workflow for preparing New Year’s card envelopes. Downloads the Google Sheets mailing list, formats addresses per country, and produces a mail‑merge CSV for Pages or Word.
 
+## Installation
+
+- Runtime only:
+  - pip: `pip install -e .`
+  - uv: `uv pip install -e .`
+- Development (adds pytest, mypy):
+  - pip: `pip install -e .[dev]`
+  - uv: `uv pip install -e .[dev]`
+
 ## Quick Start
 
 1. Copy `.env.example` to `.env` and set `SHEET_URL`.
@@ -26,6 +35,7 @@ Address lines are generated using templates in `config/address_formats.yml`. Emp
 
 - `data/raw/<year>/` – downloaded Google Sheet (`mailing_list.csv`)
 - `data/processed/<year>/` – final CSV for mail merge (`labels_for_mailmerge.csv`)
+- `config/` – configuration files such as `address_formats.yml`
 - `templates/envelopes/` – reusable Pages and Word templates
 - `src/newyearscards/` – CLI, sheet download, and address formatting logic
 - `docs/` – detailed docs (architecture, workflow, changelog, tasks)
