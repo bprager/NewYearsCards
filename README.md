@@ -2,15 +2,6 @@
 
 Annual workflow for preparing New Year’s card envelopes. Downloads the Google Sheets mailing list, formats addresses per country, and produces a mail‑merge CSV for Pages or Word.
 
-## Installation
-
-- Runtime only:
-  - pip: `pip install -e .`
-  - uv: `uv pip install -e .`
-- Development (adds pytest, mypy):
-  - pip: `pip install -e .[dev]`
-  - uv: `uv pip install -e .[dev]`
-
 ## Quick Start
 
 1. Copy `.env.example` to `.env` and set variables.
@@ -23,13 +14,8 @@ Annual workflow for preparing New Year’s card envelopes. Downloads the Google 
      - `SERVICE_ACCOUNT_KEY` (default `Keys/google-sheet-key.json`)
 2. Place your Google service-account key at `Keys/google-sheet-key.json` (or point `SERVICE_ACCOUNT_KEY` to it). Do not commit this file.
 
-Run one of the following, depending on whether you installed the package:
-
-- If installed (recommended):
-  - `pip install -e .` or `uv pip install -e .`
-  - Download: `newyearscards download --year 2025`
-  - Build: `newyearscards build-labels --year 2025`
-
+Run from source (no install):
+ 
 - From source (no install, no PYTHONPATH):
   - Download: `python newyearscards download --year 2025`
   - Build: `python newyearscards build-labels --year 2025`
@@ -57,8 +43,10 @@ Address lines are generated using templates in `config/address_formats.yml`. Emp
 
 ## Commands
 
-- `newyearscards download --year <YYYY> [--url <SHEET_URL>] [--out <file-or-dir>]`
-- `newyearscards build-labels [--year <YYYY>] [--input <raw.csv>] [--out <file-or-dir>] [--dry-run]`
+- `python newyearscards download --year <YYYY> [--url <SHEET_URL>] [--out <file-or-dir>]`
+- `python newyearscards build-labels [--year <YYYY>] [--input <raw.csv>] [--out <file-or-dir>] [--dry-run]`
+
+Tip: Replace `python` with `uv run python` to avoid installing dev tools locally.
 
 If `--url` is omitted, `SHEET_URL` from `.env` is used. If paths are omitted, defaults are `data/raw/<year>/mailing_list.csv` and `data/processed/<year>/labels_for_mailmerge.csv`.
 
