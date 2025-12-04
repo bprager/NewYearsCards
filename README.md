@@ -14,7 +14,8 @@ Prepare New Year’s card envelopes: download the Google Sheet, format addresses
 
 ## Quick Start
 
-1. Copy `.env.example` to `.env` and set variables.
+1. Create a Google service account and download its JSON key. Save it to `Keys/google-sheet-key.json` (or point `SERVICE_ACCOUNT_KEY` to it). Do not commit this file. Setup guide: https://docs.cloud.google.com/iam/docs/keys-create-delete
+2. Copy `.env.example` to `.env` and set variables.
    - Required:
      - `SHEET_URL="https://docs.google.com/spreadsheets/d/<id>/edit#gid=0"`
    - Optional:
@@ -22,7 +23,7 @@ Prepare New Year’s card envelopes: download the Google Sheet, format addresses
      - `PROCESSED_DATA_DIR` (default `data/processed`)
      - `ADDRESS_TEMPLATES` (default `config/address_formats.yml`)
      - `SERVICE_ACCOUNT_KEY` (default `Keys/google-sheet-key.json`)
-2. Place your Google service-account key at `Keys/google-sheet-key.json` (or point `SERVICE_ACCOUNT_KEY` to it). Do not commit this file.
+   Tip: Share the Sheet with the service account’s email so it can read it.
 
 Run from source (no install):
 - Download: `python newyearscards download --year 2025`
@@ -68,6 +69,7 @@ Tip: Use `uv run python` to avoid installing dev tools locally. If `--url` is om
 ## Credentials
 
 - Service account key: `Keys/google-sheet-key.json`
+- Create/manage keys: https://docs.cloud.google.com/iam/docs/keys-create-delete
 - `.env`:
   - `SHEET_URL="https://docs.google.com/spreadsheets/d/<id>/edit#gid=0"`
   - Optional: `RAW_DATA_DIR`, `PROCESSED_DATA_DIR`, `ADDRESS_TEMPLATES`
