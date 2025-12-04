@@ -28,6 +28,9 @@ dev-install:
 test:
 	pytest -q
 
+coverage:
+	pytest --cov=$(SRC) --cov-report=term-missing -q
+
 typecheck:
 	mypy $(SRC)
 

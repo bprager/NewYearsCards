@@ -151,14 +151,24 @@ def load_templates(path: Path) -> dict[str, dict[str, list[str]]]:
             continue
         if current is None:
             continue
-        if line.strip() == "lines:":
+        stripped = line.strip()
+        if stripped == "lines:":
             in_lines = True
             continue
-        if in_lines and line.strip().startswith("- "):
-            item = line.strip()[2:].strip()
+        if in_lines and stripped.startswith("- "):
+            item = stripped[2:].strip()
             if item and item[0] in {'"', "'"} and item[-1] == item[0]:
                 item = item[1:-1]
             templates[current]["lines"].append(item)
+            continue
+        # support 'uppercase_last_n_lines: N' in fallback parser
+        if stripped.startswith("uppercase_last_n_lines:"):
+            try:
+                _, val = stripped.split(":", 1)
+                templates[current]["uppercase_last_n_lines"] = int(val.strip())
+            except Exception:
+                # ignore parse errors, default will apply in code
+                pass
     return templates
 
 
