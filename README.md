@@ -13,8 +13,15 @@ Annual workflow for preparing New Year’s card envelopes. Downloads the Google 
 
 ## Quick Start
 
-1. Copy `.env.example` to `.env` and set `SHEET_URL`.
-2. Place your Google service-account key at `Keys/google-sheet-key.json` (not committed).
+1. Copy `.env.example` to `.env` and set variables.
+   - Required:
+     - `SHEET_URL="https://docs.google.com/spreadsheets/d/<id>/edit#gid=0"`
+   - Optional:
+     - `RAW_DATA_DIR` (default `data/raw`)
+     - `PROCESSED_DATA_DIR` (default `data/processed`)
+     - `ADDRESS_TEMPLATES` (default `config/address_formats.yml`)
+     - `SERVICE_ACCOUNT_KEY` (default `Keys/google-sheet-key.json`)
+2. Place your Google service-account key at `Keys/google-sheet-key.json` (or point `SERVICE_ACCOUNT_KEY` to it). Do not commit this file.
 
 Run one of the following, depending on whether you installed the package:
 
