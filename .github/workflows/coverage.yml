@@ -25,12 +25,4 @@ jobs:
       - name: Run tests with coverage (fail under 90%)
         run: pytest --cov=src/newyearscards --cov-report=term-missing --cov-fail-under=90 -q
 
-      - name: Upload coverage to Codecov (optional)
-        if: ${{ env.CODECOV_TOKEN != '' }}
-        uses: codecov/codecov-action@v3
-        with:
-          flags: unittests
-          fail_ci_if_error: true
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
+      # Intentionally skip Codecov upload here; main CI workflow handles uploads.
