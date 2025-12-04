@@ -40,3 +40,16 @@ Security tips
 - Rotate or delete keys you don’t use (see the Google docs in step 1)
 - Share the sheet only with the service account(s) you intend to use
 
+Test your setup
+- Verify `.env`:
+  - `SHEET_URL` points to your Google Sheet (edit URL with `#gid=` is fine)
+  - `SERVICE_ACCOUNT_KEY` points to your JSON key (defaults to `Keys/google-sheet-key.json`)
+- Run from source (no install):
+  - Download CSV: `python newyearscards download --year 2025`
+    - Expected: `data/raw/2025/mailing_list.csv` exists and contains CSV data
+  - Build labels: `python newyearscards build-labels --year 2025`
+    - Expected: `data/processed/2025/labels_for_mailmerge.csv` exists
+- Troubleshooting:
+  - 404/permission errors → Share the Sheet with the service account email
+  - Key not found → Check `SERVICE_ACCOUNT_KEY` path and file permissions
+  - URL parse errors → Ensure `SHEET_URL` matches the standard Google Sheets URL format
