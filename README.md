@@ -14,7 +14,7 @@ Prepare New Year’s card envelopes: download the Google Sheet, format addresses
 
 ## Quick Start
 
-1. Create a Google service account and download its JSON key. Save it to `Keys/google-sheet-key.json` (or point `SERVICE_ACCOUNT_KEY` to it). Do not commit this file. Setup guide: https://docs.cloud.google.com/iam/docs/keys-create-delete
+1. Create a Google service account and download its JSON key. Save it to `Keys/google-sheet-key.json` (or point `SERVICE_ACCOUNT_KEY` to it). Do not commit this file. Setup guide: https://docs.cloud.google.com/iam/docs/keys-create-delete (see also docs/GOOGLE_AUTH.md)
 2. Copy `.env.example` to `.env` and set variables.
    - Required:
      - `SHEET_URL="https://docs.google.com/spreadsheets/d/<id>/edit#gid=0"`
@@ -69,7 +69,7 @@ Tip: Use `uv run python` to avoid installing dev tools locally. If `--url` is om
 ## Credentials
 
 - Service account key: `Keys/google-sheet-key.json`
-- Create/manage keys: https://docs.cloud.google.com/iam/docs/keys-create-delete
+ - Create/manage keys: https://docs.cloud.google.com/iam/docs/keys-create-delete (more in docs/GOOGLE_AUTH.md)
 - `.env`:
   - `SHEET_URL="https://docs.google.com/spreadsheets/d/<id>/edit#gid=0"`
   - Optional: `RAW_DATA_DIR`, `PROCESSED_DATA_DIR`, `ADDRESS_TEMPLATES`
