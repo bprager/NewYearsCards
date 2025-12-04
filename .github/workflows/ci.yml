@@ -42,7 +42,7 @@ jobs:
           fail_ci_if_error: false
 
       - name: Upload coverage to Codecov (token fallback)
-        if: ${{ steps.codecov_oidc.outcome != 'success' && secrets.CODECOV_TOKEN != '' }}
+        if: ${{ secrets.CODECOV_TOKEN != '' }}
         uses: codecov/codecov-action@v5
         with:
           files: ./coverage.xml
