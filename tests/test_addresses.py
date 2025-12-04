@@ -206,3 +206,52 @@ def test_normalize_headers_with_extra_columns():
     norm = addresses.normalize_headers(raw)
     # Extra column should be carried through in lowercase canonical form
     assert norm[3] == "some extra col"
+
+
+def test_infer_country_aliases_ukraine():
+    # ASCII alias
+    code, name = addresses.infer_country({"country": "Ukraine"})
+    assert code == "UA"
+    assert name == "Ukraine"
+    # Unicode alias (Cyrillic)
+    code2, name2 = addresses.infer_country({"country": "україна"})
+    assert code2 == "UA"
+    assert name2 == "Ukraine"
+
+
+def test_ukraine_template_utf8_preserved(tmp_path):
+    # Ensure Cyrillic characters survive end-to-end, with the UA template
+    year_dir = tmp_path / "2027"
+    year_dir.mkdir(parents=True)
+    input_csv = year_dir / "mailing_list.csv"
+
+    header = [
+        "First Name",
+        "Last Name",
+        "Address 1",
+        "Address 2",
+        "City",
+        "Zip Code",
+        "Country",
+    ]
+    rows = [
+        ["Олександр", "Шевченко", "вул. Хрещатик, 1", "", "Київ", "01001", "україна"],
+    ]
+    with input_csv.open("w", encoding="utf-8", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(header)
+        w.writerows(rows)
+
+    out = addresses.build_labels(input_csv)
+    content = out.read_text(encoding="utf-8").splitlines()
+    # Header + 1 row
+    assert len(content) == 2
+    # First/LastName with Cyrillic preserved
+    assert "Олександр" in content[1]
+    assert "Шевченко" in content[1]
+    # City and ZIP should both appear across the address lines
+    assert "Київ" in content[1]
+    assert "01001" in content[1]
+    # Country column and last line should reflect Ukraine; last line specifically 'UKRAINE'
+    assert ",Ukraine," in content[1]
+    assert content[1].endswith(",UKRAINE") or ",UKRAINE" in content[1]

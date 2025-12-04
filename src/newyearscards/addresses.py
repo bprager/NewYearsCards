@@ -4,6 +4,7 @@ import csv
 import re
 from pathlib import Path
 from typing import Dict, Iterable, List, Tuple
+import unicodedata
 
 try:
     import yaml  # type: ignore
@@ -96,6 +97,13 @@ US_STATE_ABBR = {
     "DC",
 }
 
+# Country aliases mapping (case-insensitive, supports Unicode)
+# Keys are expected to be NFC-normalized, casefolded strings.
+COUNTRY_ALIASES: Dict[str, str] = {
+    "ukraine": "UA",
+    "україна": "UA",
+}
+
 
 def _canon(s: str) -> str:
     s = s.strip().lower()
@@ -153,6 +161,19 @@ def infer_country(row: Dict[str, str]) -> Tuple[str, str]:
     if not raw and state in US_STATE_ABBR:
         return "US", "United States"
 
+    # First try Unicode-aware alias mapping
+    alias_key = unicodedata.normalize("NFC", raw).casefold()
+    if alias_key in COUNTRY_ALIASES:
+        code = COUNTRY_ALIASES[alias_key]
+        # Display names for known codes
+        display = {
+            "DE": "Germany",
+            "FR": "France",
+            "US": "United States",
+            "UA": "Ukraine",
+        }.get(code, raw or code)
+        return code, display
+
     key = _canon(raw)
     if key in {"germany", "de", "deutschland"}:
         return "DE", "Germany"
@@ -198,6 +219,45 @@ def build_address_lines(
     return out
 
 
+def _compact_lines_for_schema(
+    code: str, lines: List[str], row: Dict[str, str]
+) -> List[str]:
+    """Ensure at most 5 address lines while preserving important info.
+
+    - If there are more than 5 lines, try to merge city/zip for certain countries.
+    - Always try to keep the country line if present at the end.
+    """
+    if len(lines) <= 5:
+        return (lines + [""] * 5)[:5]
+
+    # Special-case Ukraine: merge city and zip into a single line if both present
+    if code == "UA":
+        city_val = (row.get("city") or "").strip()
+        zip_val = (row.get("zip") or "").strip()
+        try:
+            city_idx = lines.index(city_val)
+        except ValueError:
+            city_idx = -1
+        try:
+            zip_idx = lines.index(zip_val)
+        except ValueError:
+            zip_idx = -1
+        if city_idx >= 0 and zip_idx >= 0 and city_idx != zip_idx:
+            first_idx = min(city_idx, zip_idx)
+            merged = (
+                f"{city_val} {zip_val}" if city_idx < zip_idx else f"{zip_val} {city_val}"
+            ).strip()
+            # Remove both and insert merged at the earliest position
+            new_lines = [l for i, l in enumerate(lines) if i not in (city_idx, zip_idx)]
+            new_lines.insert(first_idx, merged)
+            lines = new_lines
+
+    # If still too many lines, keep first four and the last (likely country)
+    if len(lines) > 5:
+        lines = lines[:4] + [lines[-1]]
+    return (lines + [""] * 5)[:5]
+
+
 def transform_rows(
     rows: Iterable[Dict[str, str]], templates: Dict[str, Dict[str, List[str]]]
 ) -> List[Dict[str, str]]:
@@ -209,8 +269,8 @@ def transform_rows(
 
         code, display_country = infer_country(row)
         lines = build_address_lines(row, templates)
-        # ensure exactly 5 columns
-        lines5 = (lines + [""] * 5)[:5]
+        # ensure at most 5 columns, preserving country line when possible
+        lines5 = _compact_lines_for_schema(code, lines, row)
 
         output.append(
             {
