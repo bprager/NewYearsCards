@@ -30,3 +30,11 @@ UA:
     - "{city}"
     - "{zip}"
     - "UKRAINE"
+
+PF:
+  lines:
+    - "{prefix} {first_name} {last_name}"
+    - "{address1}"
+    - "{address2}"
+    - "{zip} {city} {state}"
+    - "FRENCH POLYNESIA"

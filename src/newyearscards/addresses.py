@@ -102,6 +102,10 @@ US_STATE_ABBR = {
 COUNTRY_ALIASES: Dict[str, str] = {
     "ukraine": "UA",
     "україна": "UA",
+    "french polynesia": "PF",
+    "polynésie française": "PF",
+    "polynesie francaise": "PF",
+    "pf": "PF",
 }
 
 
@@ -171,6 +175,7 @@ def infer_country(row: Dict[str, str]) -> Tuple[str, str]:
             "FR": "France",
             "US": "United States",
             "UA": "Ukraine",
+            "PF": "French Polynesia",
         }.get(code, raw or code)
         return code, display
 

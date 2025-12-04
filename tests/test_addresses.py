@@ -189,9 +189,35 @@ def test_infer_country_variants_and_default():
         assert code == "DE"
         assert name == "Germany"
 
-    # French Polynesia should pass through using default template
+    # French Polynesia should map to PF and keep display name
     code, name = addresses.infer_country({"country": "French Polynesia"})
+    assert code == "PF"
     assert name == "French Polynesia"
+
+
+def test_build_address_lines_french_polynesia():
+    templates = addresses.load_templates(Path("config/address_formats.yml"))
+    pf_row = {
+        "prefix": "Fam.",
+        "first_name": "Moetai",
+        "last_name": "Brotherson",
+        "address1": "BP 42883",
+        "address2": "",
+        "city": "Papeete",
+        "state": "Tahiti",
+        "zip": "98713",
+        "country": "French Polynesia",
+    }
+    lines_pf = addresses.build_address_lines(pf_row, templates)
+    assert lines_pf[-1] == "FRENCH POLYNESIA"
+    assert any("98713 Papeete" in l for l in lines_pf)
+    assert any("Tahiti" in l for l in lines_pf)
+
+    # Unicode alias should also resolve
+    pf_row2 = dict(pf_row)
+    pf_row2["country"] = "Polynésie française"
+    lines_pf2 = addresses.build_address_lines(pf_row2, templates)
+    assert lines_pf2[-1] == "FRENCH POLYNESIA"
 
 
 def test_normalize_headers_with_extra_columns():
