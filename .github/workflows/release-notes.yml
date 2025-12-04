@@ -1,0 +1,31 @@
+name: Release Notes
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Generate release notes from CHANGELOG
+        run: |
+          python scripts/generate_release_notes.py --version "${GITHUB_REF_NAME#v}" --out release_notes.md
+
+      - name: Create or update GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release_notes.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
