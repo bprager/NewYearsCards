@@ -15,15 +15,23 @@ Annual workflow for preparing New Year’s card envelopes. Downloads the Google 
 
 1. Copy `.env.example` to `.env` and set `SHEET_URL`.
 2. Place your Google service-account key at `Keys/google-sheet-key.json` (not committed).
-3. Download the mailing list CSV:
-   
-   `newyearscards download --year 2025`
 
-4. Build the processed labels CSV:
-   
-   `newyearscards build-labels --year 2025`
+Run one of the following, depending on whether you installed the package:
 
-5. In Pages/Word, use a template from `templates/envelopes/`, and attach `data/processed/<year>/labels_for_mailmerge.csv` as the data source.
+- If installed (recommended):
+  - `pip install -e .` or `uv pip install -e .`
+  - Download: `newyearscards download --year 2025`
+  - Build: `newyearscards build-labels --year 2025`
+
+- From source (no install):
+  - Download: `PYTHONPATH=src python -m newyearscards.cli download --year 2025`
+  - Build: `PYTHONPATH=src python -m newyearscards.cli build-labels --year 2025`
+
+- Using uv without install:
+  - Download: `uv run -m newyearscards.cli download --year 2025`
+  - Build: `uv run -m newyearscards.cli build-labels --year 2025`
+
+Then, in Pages/Word, use a template from `templates/envelopes/`, and attach `data/processed/<year>/labels_for_mailmerge.csv` as the data source.
 
 ## Output CSV Schema
 
