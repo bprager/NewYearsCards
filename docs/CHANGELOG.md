@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+_No changes yet._
+
+## [0.2.1] - 2025-12-04
+
 ### Added
 - Address templates and rules for international formatting:
   - New template `US` without a country line (domestic addressing).
