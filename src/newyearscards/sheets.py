@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 import os
-import re
 from pathlib import Path
-from typing import Tuple, Optional
-from urllib.parse import urlparse, parse_qs
+import re
+from urllib.parse import parse_qs, urlparse
 
 try:
     from dotenv import load_dotenv  # type: ignore
@@ -14,13 +13,12 @@ except Exception:  # pragma: no cover
         return False
 
 
-from .config import load_paths, ensure_dir
-
+from .config import ensure_dir, load_paths
 
 SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]
 
 
-def extract_ids(sheet_url: str) -> Tuple[str, str]:
+def extract_ids(sheet_url: str) -> tuple[str, str]:
     """
     Extract spreadsheet id and gid (worksheet id) from a Google Sheets URL.
     If no gid is found, default to "0".
@@ -45,7 +43,7 @@ def extract_ids(sheet_url: str) -> Tuple[str, str]:
 
 
 def download_sheet(
-    year: int, *, sheet_url: Optional[str] = None, out_path: Optional[Path] = None
+    year: int, *, sheet_url: str | None = None, out_path: Path | None = None
 ) -> Path:
     """
     Download the specified Google Sheet as CSV via service-account credentials.
@@ -62,8 +60,8 @@ def download_sheet(
     spreadsheet_id, gid = extract_ids(sheet_url)
 
     # Import heavy google deps lazily to keep module import light for tests
-    from google.oauth2 import service_account  # type: ignore
     from google.auth.transport.requests import AuthorizedSession  # type: ignore
+    from google.oauth2 import service_account  # type: ignore
 
     key_path = paths.key_path
     if not key_path.exists():

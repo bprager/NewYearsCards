@@ -1,5 +1,5 @@
-import sys
 from pathlib import Path
+import sys
 
 # Ensure package under src/ is importable
 ROOT = Path(__file__).resolve().parent.parent

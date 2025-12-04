@@ -1,11 +1,9 @@
 from __future__ import annotations
 
+import csv
+from pathlib import Path
 import sys
 import types
-from pathlib import Path
-
-import csv
-import builtins
 
 from newyearscards import cli as cli_mod
 

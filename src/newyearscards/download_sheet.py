@@ -2,11 +2,13 @@
 import os
 import re
 import sys
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import parse_qs, urlparse
 
-from dotenv import load_dotenv  # type: ignore[import-not-found]
-from google.oauth2 import service_account  # type: ignore[import-not-found]
-from google.auth.transport.requests import AuthorizedSession  # type: ignore[import-not-found]
+try:
+    from dotenv import load_dotenv  # type: ignore
+except Exception:
+    def load_dotenv(*_args, **_kwargs):  # type: ignore
+        return False
 
 
 KEY_PATH = "Keys/google-sheet-key.json"
@@ -14,7 +16,7 @@ OUTPUT_CSV = "sheet.csv"
 SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]
 
 
-def extract_ids(sheet_url: str):
+def extract_ids(sheet_url: str) -> tuple[str, str]:
     """
     Extract spreadsheet id and gid (worksheet id) from a Google Sheets URL.
     If no gid is found, default to 0.
@@ -40,7 +42,7 @@ def extract_ids(sheet_url: str):
     return spreadsheet_id, gid
 
 
-def main():
+def main() -> None:
     # Load SHEET_URL from .env
     load_dotenv()
     sheet_url = os.getenv("SHEET_URL")
@@ -59,11 +61,16 @@ def main():
         print(f"Error: key file not found at {KEY_PATH}", file=sys.stderr)
         sys.exit(1)
 
-    creds = service_account.Credentials.from_service_account_file(
-        KEY_PATH,
-        scopes=SCOPES,
-    )
+    # Lazy import Google libs so simply importing this module doesn't require them
+    try:
+        from google.auth.transport.requests import AuthorizedSession  # type: ignore
+        from google.oauth2 import service_account  # type: ignore
+    except Exception as e:  # pragma: no cover
+        print("Error: Google libraries are required for downloading the sheet.", file=sys.stderr)
+        print(str(e), file=sys.stderr)
+        sys.exit(1)
 
+    creds = service_account.Credentials.from_service_account_file(KEY_PATH, scopes=SCOPES)
     authed_session = AuthorizedSession(creds)
 
     # Drive export endpoint for CSV

@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-import os
 from dataclasses import dataclass
+import os
 from pathlib import Path
-from typing import Optional
 
 try:
     from dotenv import load_dotenv  # type: ignore

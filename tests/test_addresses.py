@@ -1,6 +1,5 @@
-from pathlib import Path
-
 import csv
+from pathlib import Path
 
 from newyearscards import addresses
 
@@ -52,7 +51,7 @@ def test_build_address_lines_various_countries():
     }
     lines_de = addresses.build_address_lines(de_row, templates)
     assert lines_de[-1] == "GERMANY"
-    assert any("19322 WITTENBERGE" in l for l in lines_de)
+    assert any("19322 WITTENBERGE" in line for line in lines_de)
 
     fr_row = {
         "prefix": "",
@@ -210,8 +209,8 @@ def test_build_address_lines_french_polynesia():
     }
     lines_pf = addresses.build_address_lines(pf_row, templates)
     assert lines_pf[-1] == "FRENCH POLYNESIA"
-    assert any("98713 Papeete" in l for l in lines_pf)
-    assert any("Tahiti" in l for l in lines_pf)
+    assert any("98713 Papeete" in line for line in lines_pf)
+    assert any("Tahiti" in line for line in lines_pf)
 
     # Unicode alias should also resolve
     pf_row2 = dict(pf_row)

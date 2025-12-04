@@ -1,23 +1,16 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 import csv
-import re
-from pathlib import Path
-from typing import Any, Dict, Iterable, List, Tuple, cast
-import unicodedata
-from types import ModuleType
 import importlib
+from pathlib import Path
+import re
+from typing import Any, cast
+import unicodedata
 
-yaml_module: Any | None
-try:
-    yaml_module = importlib.import_module("yaml")
-except Exception:  # pragma: no cover
-    yaml_module = None
+from .config import ensure_dir, load_paths
 
-from .config import load_paths, ensure_dir
-
-
-NORMALIZE_MAP: Dict[str, str] = {
+NORMALIZE_MAP: dict[str, str] = {
     "prefix": "prefix",
     "first name": "first_name",
     "firstname": "first_name",
@@ -102,7 +95,7 @@ US_STATE_ABBR = {
 
 # Country aliases mapping (case-insensitive, supports Unicode)
 # Keys are expected to be NFC-normalized, casefolded strings.
-COUNTRY_ALIASES: Dict[str, str] = {
+COUNTRY_ALIASES: dict[str, str] = {
     "ukraine": "UA",
     "україна": "UA",
     "french polynesia": "PF",
@@ -119,25 +112,32 @@ def _canon(s: str) -> str:
     return s
 
 
-def normalize_headers(headers: Iterable[str]) -> List[str]:
-    result: List[str] = []
+def normalize_headers(headers: Iterable[str]) -> list[str]:
+    result: list[str] = []
     for h in headers:
         key = NORMALIZE_MAP.get(_canon(h), _canon(h))
         result.append(key)
     return result
 
 
-def load_templates(path: Path) -> Dict[str, Dict[str, List[str]]]:
+yaml_module: Any | None
+try:
+    yaml_module = importlib.import_module("yaml")
+except Exception:  # pragma: no cover
+    yaml_module = None
+
+
+def load_templates(path: Path) -> dict[str, dict[str, list[str]]]:
     text = path.read_text(encoding="utf-8")
     if yaml_module is not None:
         data = cast(Any, yaml_module).safe_load(text)
         if not isinstance(data, dict):
             raise ValueError("address templates file must be a mapping")
-        return cast(Dict[str, Dict[str, List[str]]], data)
+        return cast(dict[str, dict[str, list[str]]], data)
 
     # Minimal fallback parser for the supported structure:
     # top-level keys, with a 'lines:' array of quoted strings
-    templates: Dict[str, Dict[str, List[str]]] = {}
+    templates: dict[str, dict[str, list[str]]] = {}
     current: str | None = None
     in_lines = False
     for raw in text.splitlines():
@@ -162,7 +162,7 @@ def load_templates(path: Path) -> Dict[str, Dict[str, List[str]]]:
     return templates
 
 
-def infer_country(row: Dict[str, str]) -> Tuple[str, str]:
+def infer_country(row: dict[str, str]) -> tuple[str, str]:
     raw = (row.get("country") or "").strip()
     state = (row.get("state") or "").strip().upper()
     if not raw and state in US_STATE_ABBR:
@@ -195,8 +195,8 @@ def infer_country(row: Dict[str, str]) -> Tuple[str, str]:
 
 
 def build_address_lines(
-    row: Dict[str, str], templates: Dict[str, Dict[str, List[str]]]
-) -> List[str]:
+    row: dict[str, str], templates: dict[str, dict[str, list[str]]]
+) -> list[str]:
     code, display_country = infer_country(row)
     tmpl = templates.get(code, templates.get("default"))
     if not tmpl or "lines" not in tmpl:
@@ -214,7 +214,7 @@ def build_address_lines(
         "country": display_country,
     }
 
-    out: List[str] = []
+    out: list[str] = []
     for pattern in tmpl.get("lines", []):
         try:
             s = pattern.format(**fmt_map)
@@ -237,9 +237,7 @@ def build_address_lines(
     return out
 
 
-def _compact_lines_for_schema(
-    code: str, lines: List[str], row: Dict[str, str]
-) -> List[str]:
+def _compact_lines_for_schema(code: str, lines: list[str], row: dict[str, str]) -> list[str]:
     """Ensure at most 5 address lines while preserving important info.
 
     - If there are more than 5 lines, try to merge city/zip for certain countries.
@@ -266,7 +264,7 @@ def _compact_lines_for_schema(
                 f"{city_val} {zip_val}" if city_idx < zip_idx else f"{zip_val} {city_val}"
             ).strip()
             # Remove both and insert merged at the earliest position
-            new_lines = [l for i, l in enumerate(lines) if i not in (city_idx, zip_idx)]
+            new_lines = [line for idx, line in enumerate(lines) if idx not in (city_idx, zip_idx)]
             new_lines.insert(first_idx, merged)
             lines = new_lines
 
@@ -277,9 +275,9 @@ def _compact_lines_for_schema(
 
 
 def transform_rows(
-    rows: Iterable[Dict[str, str]], templates: Dict[str, Dict[str, List[str]]]
-) -> List[Dict[str, str]]:
-    output: List[Dict[str, str]] = []
+    rows: Iterable[dict[str, str]], templates: dict[str, dict[str, list[str]]]
+) -> list[dict[str, str]]:
+    output: list[dict[str, str]] = []
     for row in rows:
         # Skip if clearly empty
         if not any((row.get("address1"), row.get("address2"), row.get("city"))):
@@ -314,13 +312,13 @@ def build_labels(in_csv: Path, out_csv: Path | None = None) -> Path:
         reader = csv.reader(f)
         try:
             raw_headers = next(reader)
-        except StopIteration:
-            raise ValueError("Input CSV is empty")
+        except StopIteration as err:
+            raise ValueError("Input CSV is empty") from err
 
         headers = normalize_headers(raw_headers)
-        rows: List[Dict[str, str]] = []
+        rows: list[dict[str, str]] = []
         for raw_row in reader:
-            row_dict: Dict[str, str] = {}
+            row_dict: dict[str, str] = {}
             for i, val in enumerate(raw_row[: len(headers)]):
                 row_dict[headers[i]] = val.strip()
             rows.append(row_dict)
@@ -331,10 +329,10 @@ def build_labels(in_csv: Path, out_csv: Path | None = None) -> Path:
         # Deduce year from parent folder name if possible
         try:
             year = int(in_csv.parent.name)
-        except ValueError:
+        except ValueError as err:
             raise ValueError(
                 "Cannot infer year from input path; please provide output path"
-            )
+            ) from err
         target_dir = paths.processed_dir(year)
         ensure_dir(target_dir)
         out_csv = target_dir / "labels_for_mailmerge.csv"
