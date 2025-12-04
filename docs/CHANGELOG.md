@@ -7,7 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-_No changes yet._
+No unreleased changes.
+
+## [1.0.0] - 2025-12-04
+
+This is the first complete, stable release.
+
+### Added
+- CI/CD hardening and coverage reporting:
+  - GitHub Actions workflows for CI and Coverage with stage banners and strict gates.
+  - Codecov integration with OIDC tokenless uploads (GitHub App) and a guarded token fallback on main.
+  - Coverage thresholds: project 90%, patch 95%; pytest enforces `--cov-fail-under=90`.
+- Developer experience:
+  - Run from source without install or PYTHONPATH (top-level `newyearscards` launcher).
+  - Makefile shortcuts: `check`, `coverage`, `run-download`, `run-build`.
+  - Ruff and mypy configured; `make check` prints stage banners and runs lint, mypy, and tests.
+  - `docs/CI.md` and `docs/SETUP_SHEET.md` with setup guidance and examples.
+- Address formatting:
+  - Template-driven uppercasing via `uppercase_last_n_lines` (e.g., FR, DE, UA).
+  - Country aliases (Unicode-aware), including Ukraine and French Polynesia.
+  - Fallback YAML parser for `address_formats.yml` if PyYAML is unavailable.
+
+### Changed
+- README restructured to emphasize no-install usage and correct CLI invocation (`python newyearscards ...`).
+- Added explicit Google Sheet header template to README and docs to ensure a clean first-time setup.
+- Type annotations improved (TypedDict for templates) and lint fixes across tests.
+
+### Fixed
+- CI badge and Codecov badge now reflect accurate status; private-repo badge uses tokenized URL.
+- CLI and address tests expanded to push coverage well above 90% overall.
 
 ## [0.2.2] - 2025-12-04
 
