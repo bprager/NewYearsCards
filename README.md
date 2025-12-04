@@ -10,7 +10,7 @@
 ![Ruff](https://img.shields.io/badge/ruff-checked-4B8BBE)
 ![mypy](https://img.shields.io/badge/mypy-checked-2A6DBB)
 
-Annual workflow for preparing New Year’s card envelopes. Downloads the Google Sheets mailing list, formats addresses per country, and produces a mail‑merge CSV for Pages or Word.
+Prepare New Year’s card envelopes: download the Google Sheet, format addresses per country, export a mail‑merge CSV.
 
 ## Quick Start
 
@@ -25,14 +25,9 @@ Annual workflow for preparing New Year’s card envelopes. Downloads the Google 
 2. Place your Google service-account key at `Keys/google-sheet-key.json` (or point `SERVICE_ACCOUNT_KEY` to it). Do not commit this file.
 
 Run from source (no install):
- 
-- From source (no install, no PYTHONPATH):
-  - Download: `python newyearscards download --year 2025`
-  - Build: `python newyearscards build-labels --year 2025`
-
-- Using uv without install:
-  - Download: `uv run python newyearscards download --year 2025`
-  - Build: `uv run python newyearscards build-labels --year 2025`
+- Download: `python newyearscards download --year 2025`
+- Build: `python newyearscards build-labels --year 2025`
+  (use `uv run python ...` if you prefer uv)
 
 Then, in Pages/Word, use a template from `templates/envelopes/`, and attach `data/processed/<year>/labels_for_mailmerge.csv` as the data source.
 
@@ -44,21 +39,15 @@ Address lines are generated using templates in `config/address_formats.yml`. Emp
 
 ## Google Sheet Format
 
-Use the following header row in your Google Sheet so the CSV is recognized without extra mapping:
+Use this single header row to ensure automatic mapping:
+`Prefix, First Name, Last Name, Address 1, Address 2, City, State, Zip Code, Country`
 
-- `Prefix`
-- `First Name`
-- `Last Name`
-- `Address 1`
-- `Address 2`
-- `City`
-- `State`
-- `Zip Code`
-- `Country`
+Example row (US):
+`", Bernd, Prager, 504 S Sierra Bonita Ave, , Los Angeles, CA, 90036-3205, US"`
 
 Notes:
-- The tool normalizes common variants (e.g., `FirstName`, `Postal Code`, `Address1`) but the above headers are the recommended, tested defaults.
-- The `Country` column drives template selection and formatting rules (uppercasing last lines, country-specific layouts, etc.).
+- Common header variants (e.g., `FirstName`, `Postal Code`, `Address1`) are normalized, but the header row above is recommended.
+- The `Country` column drives the template. Accepted US variants include `US`, `USA`, and `United States`; they are mapped to `US` internally.
 
 For a fuller guide with sample rows and tips, see docs/SETUP_SHEET.md.
 
@@ -72,13 +61,9 @@ For a fuller guide with sample rows and tips, see docs/SETUP_SHEET.md.
 - `docs/` – detailed docs (architecture, workflow, changelog, tasks)
 
 ## Commands
-
 - `python newyearscards download --year <YYYY> [--url <SHEET_URL>] [--out <file-or-dir>]`
 - `python newyearscards build-labels [--year <YYYY>] [--input <raw.csv>] [--out <file-or-dir>] [--dry-run]`
-
-Tip: Replace `python` with `uv run python` to avoid installing dev tools locally.
-
-If `--url` is omitted, `SHEET_URL` from `.env` is used. If paths are omitted, defaults are `data/raw/<year>/mailing_list.csv` and `data/processed/<year>/labels_for_mailmerge.csv`.
+Tip: Use `uv run python` to avoid installing dev tools locally. If `--url` is omitted, `SHEET_URL` from `.env` is used. Default paths are `data/raw/<year>/mailing_list.csv` and `data/processed/<year>/labels_for_mailmerge.csv`.
 
 ## Credentials
 
@@ -88,29 +73,15 @@ If `--url` is omitted, `SHEET_URL` from `.env` is used. If paths are omitted, de
   - Optional: `RAW_DATA_DIR`, `PROCESSED_DATA_DIR`, `ADDRESS_TEMPLATES`
 
 ## Contributing
-
-- Install dev tools (pytest, mypy):
-  - pip: `pip install -e .[dev]`
-  - uv: `uv pip install -e .[dev]`
-- Run tests:
-  - `pytest`
-- Type-check with mypy:
-  - `mypy src/newyearscards`
-  - or with uv: `uv run mypy src/newyearscards`
-- Quick CLI help during development:
-  - `PYTHONPATH=src python -m newyearscards.cli --help`
-  
-Note: The dev extra also installs Ruff for linting/formatting.
+- Install dev tools: `pip install -e .[dev]` (or `uv pip install -e .[dev]`)
+- Tests: `pytest`
+- Type-check: `mypy src/newyearscards` (or `uv run mypy src/newyearscards`)
+- Dev help: `PYTHONPATH=src python -m newyearscards.cli --help`
+Dev extra includes Ruff.
 
 ### Coverage
-
-- Install dev extras first (includes `pytest-cov`):
-  - `pip install -e .[dev]` or `uv pip install -e .[dev]`
-- Run coverage locally:
-  - `make coverage` (shows per-file, missing lines)
-  - CI enforces `--cov-fail-under=90` and Codecov thresholds (project 90%, patch 95%).
-
-Note for private repositories: the Codecov badge in this README uses the tokenized URL variant. Replace `REPLACE_WITH_CODECOV_BADGE_TOKEN` with the Badge token from Codecov project settings (Repository Settings → Badge). See docs/CI.md for details.
+- `make coverage` (shows per-file, missing lines). CI enforces 90% overall and Codecov thresholds (project 90%, patch 95%).
+Private repos: set the Codecov badge token in README (see docs/CI.md).
 
 ### Makefile shortcuts
 

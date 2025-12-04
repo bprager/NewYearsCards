@@ -102,6 +102,11 @@ COUNTRY_ALIASES: dict[str, str] = {
     "polynésie française": "PF",
     "polynesie francaise": "PF",
     "pf": "PF",
+    "united states": "US",
+    "united states of america": "US",
+    "usa": "US",
+    "u.s.": "US",
+    "us": "US",
 }
 
 
