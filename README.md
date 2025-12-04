@@ -58,6 +58,8 @@ Notes:
 - The tool normalizes common variants (e.g., `FirstName`, `Postal Code`, `Address1`) but the above headers are the recommended, tested defaults.
 - The `Country` column drives template selection and formatting rules (uppercasing last lines, country-specific layouts, etc.).
 
+For a fuller guide with sample rows and tips, see docs/SETUP_SHEET.md.
+
 ## Directories
 
 - `data/raw/<year>/` – downloaded Google Sheet (`mailing_list.csv`)
