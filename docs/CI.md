@@ -22,3 +22,12 @@ Manual troubleshooting
   - `gh run list --workflow=CI --limit 5`
   - `gh run view <run_id> --verbose`
 - Check coverage locally: `make coverage`
+
+Version badge color scheme
+- docs/badges/version.svg is updated on release. Colors:
+  - Stable (no suffix): green
+  - rc/pre/candidate: yellow
+  - beta: orange
+  - alpha: red
+  - dev/nightly/snapshot: blue
+  - You can override the color when invoking the script: `python scripts/update_version_badge.py --version 1.2.3 --color yellow`

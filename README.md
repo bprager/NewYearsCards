@@ -1,5 +1,6 @@
 # NewYearsCards
 
+[![Version](docs/badges/version.svg)](https://github.com/bprager/NewYearsCards/releases)
 ![CI](https://github.com/bprager/NewYearsCards/actions/workflows/ci.yml/badge.svg)
 [![Release](https://img.shields.io/github/v/release/bprager/NewYearsCards?display_name=tag&sort=semver)](https://github.com/bprager/NewYearsCards/releases)
 ![Coverage](https://github.com/bprager/NewYearsCards/actions/workflows/coverage.yml/badge.svg)
