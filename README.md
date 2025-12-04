@@ -1,9 +1,10 @@
 # NewYearsCards
 
 ![CI](https://github.com/bprager/NewYearsCards/actions/workflows/ci.yml/badge.svg)
+![Coverage](https://github.com/bprager/NewYearsCards/actions/workflows/coverage.yml/badge.svg)
 ![Release Notes](https://github.com/bprager/NewYearsCards/actions/workflows/release-notes.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.12%2B-blue)
-[![codecov](https://codecov.io/gh/bprager/NewYearsCards/branch/main/graph/badge.svg)](https://codecov.io/gh/bprager/NewYearsCards)
+[![codecov](https://codecov.io/gh/bprager/NewYearsCards/branch/main/graph/badge.svg?token=REPLACE_WITH_CODECOV_BADGE_TOKEN)](https://codecov.io/gh/bprager/NewYearsCards?token=REPLACE_WITH_CODECOV_BADGE_TOKEN)
 ![Ruff](https://img.shields.io/badge/ruff-checked-4B8BBE)
 ![mypy](https://img.shields.io/badge/mypy-checked-2A6DBB)
 
@@ -83,8 +84,11 @@ Note: The dev extra also installs Ruff for linting/formatting.
 
 - Install dev extras first (includes `pytest-cov`):
   - `pip install -e .[dev]` or `uv pip install -e .[dev]`
-- Run coverage:
+- Run coverage locally:
   - `make coverage` (shows per-file, missing lines)
+  - CI enforces `--cov-fail-under=90` and Codecov thresholds (project 90%, patch 95%).
+
+Note for private repositories: the Codecov badge in this README uses the tokenized URL variant. Replace `REPLACE_WITH_CODECOV_BADGE_TOKEN` with the Badge token from Codecov project settings (Repository Settings → Badge). See docs/CI.md for details.
 
 ### Makefile shortcuts
 
