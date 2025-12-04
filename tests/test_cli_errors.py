@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 import builtins
-import sys
-from pathlib import Path
 
 from newyearscards import cli as cli_mod
 
@@ -31,7 +29,9 @@ def test_download_import_error(monkeypatch, capsys):
     orig_import = builtins.__import__
 
     def fake_import(name, globals=None, locals=None, fromlist=(), level=0):  # type: ignore[no-untyped-def]
-        if name.endswith("newyearscards.sheets") or (level == 1 and fromlist == ("download_sheet",)):
+        if name.endswith("newyearscards.sheets") or (
+            level == 1 and fromlist == ("download_sheet",)
+        ):
             raise ImportError("simulated import failure")
         return orig_import(name, globals, locals, fromlist, level)
 
@@ -40,4 +40,3 @@ def test_download_import_error(monkeypatch, capsys):
     assert code == 2
     err = capsys.readouterr().err
     assert "dependencies are missing" in err
-

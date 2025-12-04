@@ -5,7 +5,7 @@ import csv
 import importlib
 from pathlib import Path
 import re
-from typing import Any, cast
+from typing import Any, TypedDict, cast
 import unicodedata
 
 from .config import ensure_dir, load_paths
@@ -127,17 +127,22 @@ except Exception:  # pragma: no cover
     yaml_module = None
 
 
-def load_templates(path: Path) -> dict[str, dict[str, list[str]]]:
+class TemplateEntry(TypedDict, total=False):
+    lines: list[str]
+    uppercase_last_n_lines: int
+
+
+def load_templates(path: Path) -> dict[str, TemplateEntry]:
     text = path.read_text(encoding="utf-8")
     if yaml_module is not None:
         data = cast(Any, yaml_module).safe_load(text)
         if not isinstance(data, dict):
             raise ValueError("address templates file must be a mapping")
-        return cast(dict[str, dict[str, list[str]]], data)
+        return cast(dict[str, TemplateEntry], data)
 
     # Minimal fallback parser for the supported structure:
     # top-level keys, with a 'lines:' array of quoted strings
-    templates: dict[str, dict[str, list[str]]] = {}
+    templates: dict[str, TemplateEntry] = {}
     current: str | None = None
     in_lines = False
     for raw in text.splitlines():
@@ -204,9 +209,7 @@ def infer_country(row: dict[str, str]) -> tuple[str, str]:
     return (raw or "", raw or "")
 
 
-def build_address_lines(
-    row: dict[str, str], templates: dict[str, dict[str, list[str]]]
-) -> list[str]:
+def build_address_lines(row: dict[str, str], templates: dict[str, TemplateEntry]) -> list[str]:
     code, display_country = infer_country(row)
     tmpl = templates.get(code, templates.get("default"))
     if not tmpl or "lines" not in tmpl:
@@ -285,7 +288,7 @@ def _compact_lines_for_schema(code: str, lines: list[str], row: dict[str, str]) 
 
 
 def transform_rows(
-    rows: Iterable[dict[str, str]], templates: dict[str, dict[str, list[str]]]
+    rows: Iterable[dict[str, str]], templates: dict[str, TemplateEntry]
 ) -> list[dict[str, str]]:
     output: list[dict[str, str]] = []
     for row in rows:

@@ -4,13 +4,12 @@ from __future__ import annotations
 import argparse
 import os
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 
-def extract_section(changelog: Path, version: str) -> List[str]:
+def extract_section(changelog: Path, version: str) -> list[str]:
     lines = changelog.read_text(encoding="utf-8").splitlines()
-    sections: Dict[str, Tuple[int, int | None]] = {}
-    order: List[str] = []
+    sections: dict[str, tuple[int, int | None]] = {}
+    order: list[str] = []
 
     current_key: str | None = None
     current_start: int | None = None
@@ -73,4 +72,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

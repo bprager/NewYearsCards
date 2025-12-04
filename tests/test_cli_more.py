@@ -1,10 +1,9 @@
 from __future__ import annotations
 
+import csv
+from pathlib import Path
 import sys
 import types
-from pathlib import Path
-
-import csv
 
 from newyearscards import cli as cli_mod
 
@@ -28,7 +27,17 @@ def write_minimal_csv(path: Path) -> None:
             "Zip Code",
             "Country",
         ])
-        w.writerow(["Fam.", "Frank", "Prager", "Satower Str. 26", "", "Stäbelow", "", "18198", "Germany"])
+        w.writerow([
+            "Fam.",
+            "Frank",
+            "Prager",
+            "Satower Str. 26",
+            "",
+            "Stäbelow",
+            "",
+            "18198",
+            "Germany",
+        ])
 
 
 def test_build_labels_year_default_paths(tmp_path, monkeypatch, capsys):

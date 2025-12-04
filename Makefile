@@ -29,14 +29,18 @@ test:
 	pytest -q
 
 coverage:
-	@# Ensure pytest-cov is installed
-	@$(PYTHON) -c "import pytest_cov" >/dev/null 2>&1 || { \
+	@# If pytest-cov is installed in current env, use it; otherwise, try uv with dev extra.
+	@if $(PYTHON) -c "import pytest_cov" >/dev/null 2>&1; then \
+		pytest --cov=$(SRC) --cov-report=term-missing -q; \
+	elif command -v uv >/dev/null 2>&1; then \
+		echo "pytest-cov not in current env; running via 'uv run --extra dev'..."; \
+		uv run --extra dev pytest --cov=$(SRC) --cov-report=term-missing -q; \
+	else \
 		echo "pytest-cov not installed. Install dev extras first:"; \
 		echo "  pip install -e .[dev]"; \
 		echo "  or: uv pip install -e .[dev]"; \
 		exit 2; \
-	}
-	pytest --cov=$(SRC) --cov-report=term-missing -q
+	fi
 
 typecheck:
 	mypy $(SRC)

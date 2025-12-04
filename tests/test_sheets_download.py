@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import sys
 from pathlib import Path
+import sys
 
 from newyearscards import sheets
 
@@ -74,4 +74,3 @@ def test_download_sheet_writes_default_and_custom_paths(tmp_path, monkeypatch):
     out2 = sheets.download_sheet(year, out_path=out_file)
     assert out2 == out_file
     assert out2.exists()
-

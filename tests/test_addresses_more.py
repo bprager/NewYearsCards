@@ -31,5 +31,5 @@ def test_ua_compaction_keeps_country_and_merges_city_zip(tmp_path):
     lines = [r["Line1"], r["Line2"], r["Line3"], r["Line4"], r["Line5"]]
     assert len(lines) == 5
     assert lines[-1] == "UKRAINE"
-    assert any("Київ" in l for l in lines)
-    assert any("01001" in l for l in lines)
+    assert any("Київ" in line for line in lines)
+    assert any("01001" in line for line in lines)

@@ -2,8 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from newyearscards import __version__
-from newyearscards import cli as cli_mod
+from newyearscards import __version__, cli as cli_mod
 
 
 def test_cli_version_flag_prints_and_exits(capsys):
@@ -14,4 +13,3 @@ def test_cli_version_flag_prints_and_exits(capsys):
     out = capsys.readouterr().out.strip()
     assert out.startswith("newyearscards ")
     assert __version__ in out
-

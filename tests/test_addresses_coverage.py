@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-import sys
-from pathlib import Path
-
 import pytest
 
 from newyearscards import addresses
@@ -85,4 +82,3 @@ def test_build_labels_empty_and_bad_year(tmp_path, monkeypatch):
     f.write_text("Prefix\n\n", encoding="utf-8")
     with pytest.raises(ValueError):
         addresses.build_labels(f)
-
