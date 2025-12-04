@@ -66,6 +66,8 @@ If `--url` is omitted, `SHEET_URL` from `.env` is used. If paths are omitted, de
   - or with uv: `uv run mypy src/newyearscards`
 - Quick CLI help during development:
   - `PYTHONPATH=src python -m newyearscards.cli --help`
+  
+Note: The dev extra also installs Ruff for linting/formatting.
 
 ### Makefile shortcuts
 
