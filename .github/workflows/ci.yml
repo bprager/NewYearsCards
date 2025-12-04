@@ -28,10 +28,21 @@ jobs:
       - name: Coverage (XML + summary)
         run: pytest --cov=src/newyearscards --cov-report=xml --cov-report=term-missing --cov-fail-under=90 -q
 
-      - name: Upload coverage to Codecov
+      - name: Upload coverage to Codecov (with token)
+        if: ${{ secrets.CODECOV_TOKEN != '' }}
         uses: codecov/codecov-action@v5
         with:
           files: ./coverage.xml
           flags: unittests
           slug: bprager/NewYearsCards
+          token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
+
+      - name: Upload coverage to Codecov (tokenless via GitHub App)
+        if: ${{ secrets.CODECOV_TOKEN == '' }}
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage.xml
+          flags: unittests
+          slug: bprager/NewYearsCards
+          fail_ci_if_error: false
