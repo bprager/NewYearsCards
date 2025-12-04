@@ -10,6 +10,8 @@ jobs:
     permissions:
       contents: read
       id-token: write
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -42,11 +44,11 @@ jobs:
           fail_ci_if_error: false
 
       - name: Upload coverage to Codecov (token fallback)
-        if: ${{ secrets.CODECOV_TOKEN != '' }}
+        if: ${{ env.CODECOV_TOKEN != '' }}
         uses: codecov/codecov-action@v5
         with:
           files: ./coverage.xml
           flags: unittests
           slug: bprager/NewYearsCards
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ env.CODECOV_TOKEN }}
           fail_ci_if_error: true
