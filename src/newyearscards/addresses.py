@@ -3,13 +3,16 @@ from __future__ import annotations
 import csv
 import re
 from pathlib import Path
-from typing import Dict, Iterable, List, Tuple
+from typing import Any, Dict, Iterable, List, Tuple, cast
 import unicodedata
+from types import ModuleType
+import importlib
 
+yaml_module: Any | None
 try:
-    import yaml  # type: ignore
-except ImportError:  # pragma: no cover
-    yaml = None  # type: ignore
+    yaml_module = importlib.import_module("yaml")
+except Exception:  # pragma: no cover
+    yaml_module = None
 
 from .config import load_paths, ensure_dir
 
@@ -126,11 +129,11 @@ def normalize_headers(headers: Iterable[str]) -> List[str]:
 
 def load_templates(path: Path) -> Dict[str, Dict[str, List[str]]]:
     text = path.read_text(encoding="utf-8")
-    if yaml is not None:
-        data = yaml.safe_load(text)
+    if yaml_module is not None:
+        data = cast(Any, yaml_module).safe_load(text)
         if not isinstance(data, dict):
             raise ValueError("address templates file must be a mapping")
-        return data  # type: ignore[return-value]
+        return cast(Dict[str, Dict[str, List[str]]], data)
 
     # Minimal fallback parser for the supported structure:
     # top-level keys, with a 'lines:' array of quoted strings
@@ -221,6 +224,16 @@ def build_address_lines(
         s = re.sub(r"\s+", " ", s).strip()
         if s:
             out.append(s)
+
+    # Uppercase preferences: default to 1 (country line)
+    try:
+        uppercase_last = int(cast(Any, tmpl).get("uppercase_last_n_lines", 1))
+    except Exception:
+        uppercase_last = 1
+    if uppercase_last > 0 and out:
+        n = min(uppercase_last, len(out))
+        for i in range(1, n + 1):
+            out[-i] = out[-i].upper()
     return out
 
 

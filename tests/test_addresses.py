@@ -51,8 +51,8 @@ def test_build_address_lines_various_countries():
         "country": "Germany",
     }
     lines_de = addresses.build_address_lines(de_row, templates)
-    assert lines_de[-1] == "Germany"
-    assert any("19322 Wittenberge" in l for l in lines_de)
+    assert lines_de[-1] == "GERMANY"
+    assert any("19322 WITTENBERGE" in l for l in lines_de)
 
     fr_row = {
         "prefix": "",
@@ -65,7 +65,7 @@ def test_build_address_lines_various_countries():
         "country": "France",
     }
     lines_fr = addresses.build_address_lines(fr_row, templates)
-    assert lines_fr[-1] == "France"
+    assert lines_fr[-1] == "FRANCE"
 
     us_row = {
         "prefix": "Family",
@@ -79,7 +79,7 @@ def test_build_address_lines_various_countries():
         "country": "",  # inferred by state
     }
     lines_us = addresses.build_address_lines(us_row, templates)
-    assert lines_us[-1] == "United States"
+    assert lines_us[-1] == "UNITED STATES"
 
 
 def test_transform_and_build_labels_end_to_end(tmp_path):

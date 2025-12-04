@@ -5,6 +5,7 @@ default:
     - "{address2}"
     - "{zip} {city}"
     - "{country}"
+  uppercase_last_n_lines: 1
 
 DE:
   lines:
@@ -13,6 +14,7 @@ DE:
     - "{address2}"
     - "{zip} {city}"
     - "Germany"
+  uppercase_last_n_lines: 2
 
 FR:
   lines:
@@ -21,6 +23,7 @@ FR:
     - "{address2}"
     - "{zip} {city}"
     - "France"
+  uppercase_last_n_lines: 2
 
 UA:
   lines:
@@ -30,6 +33,7 @@ UA:
     - "{city}"
     - "{zip}"
     - "UKRAINE"
+  uppercase_last_n_lines: 2
 
 PF:
   lines:
