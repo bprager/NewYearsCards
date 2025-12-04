@@ -12,9 +12,7 @@ Minimum coverage and failure behavior
 - The Codecov upload step is configured with `fail_ci_if_error: true` to fail the job if upload fails.
 
 Codecov setup (private repo)
-1) Add repo secret in GitHub → Settings → Secrets and variables → Actions:
-   - Name: `CODECOV_TOKEN`
-   - Value: Copy from Codecov → Repo Settings → General → Upload token
+1) Install the Codecov GitHub App and grant it access to this repo. With the App installed, CI uploads can be tokenless (recommended). Our CI uses codecov/codecov-action@v5 without a token.
 2) Badge token for private repos (used in README):
    - In Codecov → Repo Settings → Badge, copy the tokenized badge URL parameter (e.g., `?token=abc123`)
    - Edit README.md and replace `REPLACE_WITH_CODECOV_BADGE_TOKEN` with that token.
@@ -24,4 +22,3 @@ Manual troubleshooting
   - `gh run list --workflow=CI --limit 5`
   - `gh run view <run_id> --verbose`
 - Check coverage locally: `make coverage`
-
