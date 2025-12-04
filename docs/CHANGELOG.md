@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _No changes yet._
 
+## [0.2.2] - 2025-12-04
+
+### Added
+- Developer launcher script `newyearscards` to run CLI without install or PYTHONPATH.
+- Makefile targets `run-download` and `run-build` for no‑install usage.
+- Ruff configured and added to `[project.optional-dependencies].dev`.
+
+### Changed
+- README clarified with correct command invocations:
+  - Installed usage, from‑source `python newyearscards ...`, and `uv run` examples.
+  - Highlighted `.env` configuration (SHEET_URL required; RAW/PROCESSED dir overrides; ADDRESS_TEMPLATES; SERVICE_ACCOUNT_KEY).
+- Minor CLI cleanup and formatting, tests remain green.
+
 ## [0.2.1] - 2025-12-04
 
 ### Added
