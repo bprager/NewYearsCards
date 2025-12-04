@@ -7,7 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-_No changes yet._
+### Added
+- Address templates and rules for international formatting:
+  - New template `US` without a country line (domestic addressing).
+  - New template `PF` (French Polynesia) with `zip city state` and country line.
+  - New template `UA` and Unicode-aware country aliases (e.g., "україна").
+- Configurable uppercasing via `uppercase_last_n_lines` in templates, applied to:
+  - `FR`, `DE`, `UA` (uppercases the last two lines, e.g., city/zip and country).
+  - `default` (uppercases the last line, typically the country).
+- Unit tests covering:
+  - UTF‑8 handling (Cyrillic for Ukraine) without ASCII coercion.
+  - French zip+city uppercased per template.
+  - Default template uppercasing only the country line.
+  - US template omitting the country line; last line is `CITY STATE ZIP`.
+
+### Changed
+- Address processing now applies uppercasing based on template settings instead of hardcoding logic in Python.
 
 ## [0.2.0] - 2025-12-04
 
