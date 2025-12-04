@@ -3,7 +3,7 @@
 ![CI](https://github.com/bprager/NewYearsCards/actions/workflows/ci.yml/badge.svg)
 ![Release Notes](https://github.com/bprager/NewYearsCards/actions/workflows/release-notes.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.12%2B-blue)
-![Coverage](https://img.shields.io/badge/coverage-94%25-brightgreen)
+[![codecov](https://codecov.io/gh/bprager/NewYearsCards/branch/main/graph/badge.svg)](https://codecov.io/gh/bprager/NewYearsCards)
 ![Ruff](https://img.shields.io/badge/ruff-checked-4B8BBE)
 ![mypy](https://img.shields.io/badge/mypy-checked-2A6DBB)
 
