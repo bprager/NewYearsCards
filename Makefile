@@ -16,6 +16,8 @@ help:
 	@echo "  format          Run Ruff formatter if available (optional)"
 	@echo "  check           Typecheck + tests (no lint)"
 	@echo "  release-notes   Generate release notes from CHANGELOG (VERSION=...)"
+	@echo "  run-download    Run CLI download without install (YEAR=YYYY)"
+	@echo "  run-build       Run CLI build-labels without install (YEAR=YYYY)"
 
 install:
 	pip install -e .
@@ -52,3 +54,10 @@ release-notes:
 	$(PYTHON) scripts/generate_release_notes.py --version $(VERSION) --out release_notes.md
 	@echo "Wrote release_notes.md for v$(VERSION)"
 
+run-download:
+	@[ -n "$(YEAR)" ] || (echo "Error: YEAR is required, e.g. make run-download YEAR=2025"; exit 1)
+	PYTHONPATH=src $(PYTHON) -m newyearscards.cli download --year $(YEAR) $(ARGS)
+
+run-build:
+	@[ -n "$(YEAR)" ] || (echo "Error: YEAR is required, e.g. make run-build YEAR=2025"; exit 1)
+	PYTHONPATH=src $(PYTHON) -m newyearscards.cli build-labels --year $(YEAR) $(ARGS)

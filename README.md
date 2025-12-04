@@ -27,9 +27,9 @@ Run one of the following, depending on whether you installed the package:
   - Download: `PYTHONPATH=src python -m newyearscards.cli download --year 2025`
   - Build: `PYTHONPATH=src python -m newyearscards.cli build-labels --year 2025`
 
-- Using uv without install:
-  - Download: `uv run -m newyearscards.cli download --year 2025`
-  - Build: `uv run -m newyearscards.cli build-labels --year 2025`
+- Using uv without install (add project src to PYTHONPATH):
+  - Download: `PYTHONPATH=src uv run -m newyearscards.cli download --year 2025`
+  - Build: `PYTHONPATH=src uv run -m newyearscards.cli build-labels --year 2025`
 
 Then, in Pages/Word, use a template from `templates/envelopes/`, and attach `data/processed/<year>/labels_for_mailmerge.csv` as the data source.
 
