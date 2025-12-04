@@ -32,10 +32,21 @@ jobs:
         run: pytest --cov=src/newyearscards --cov-report=xml --cov-report=term-missing --cov-fail-under=90 -q
 
       - name: Upload coverage to Codecov (tokenless via GitHub App)
+        id: codecov_oidc
         uses: codecov/codecov-action@v5
         with:
           files: ./coverage.xml
           flags: unittests
           slug: bprager/NewYearsCards
           use_oidc: true
+          fail_ci_if_error: false
+
+      - name: Upload coverage to Codecov (token fallback)
+        if: ${{ steps.codecov_oidc.outcome != 'success' && secrets.CODECOV_TOKEN != '' }}
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage.xml
+          flags: unittests
+          slug: bprager/NewYearsCards
+          token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true

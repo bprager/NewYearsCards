@@ -40,6 +40,24 @@ Then, in Pages/Word, use a template from `templates/envelopes/`, and attach `dat
 
 Address lines are generated using templates in `config/address_formats.yml`. Empty components are omitted. See `docs/SCHEMA_LABELS.md` for more details.
 
+## Google Sheet Format
+
+Use the following header row in your Google Sheet so the CSV is recognized without extra mapping:
+
+- `Prefix`
+- `First Name`
+- `Last Name`
+- `Address 1`
+- `Address 2`
+- `City`
+- `State`
+- `Zip Code`
+- `Country`
+
+Notes:
+- The tool normalizes common variants (e.g., `FirstName`, `Postal Code`, `Address1`) but the above headers are the recommended, tested defaults.
+- The `Country` column drives template selection and formatting rules (uppercasing last lines, country-specific layouts, etc.).
+
 ## Directories
 
 - `data/raw/<year>/` – downloaded Google Sheet (`mailing_list.csv`)
