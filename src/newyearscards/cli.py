@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+from collections.abc import Callable
 from contextlib import suppress
 from datetime import datetime
 import os
@@ -10,6 +11,7 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+from typing import Any
 
 from . import __version__
 from .addresses import build_labels
@@ -17,10 +19,11 @@ from .config import ensure_dir, load_paths
 
 # Best-effort .env loading (keep optional like in sheets.py)
 try:  # pragma: no cover - trivial import
-    from dotenv import load_dotenv
+    from dotenv import load_dotenv as _load_dotenv
 except Exception:  # pragma: no cover
-    def load_dotenv(*_args, **_kwargs):  # type: ignore[no-untyped-def]
+    def _load_dotenv(*_args: Any, **_kwargs: Any) -> bool:
         return False
+load_dotenv: Callable[..., bool] = _load_dotenv
 
 
 def cmd_download(args: argparse.Namespace) -> int:
