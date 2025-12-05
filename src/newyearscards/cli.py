@@ -45,11 +45,11 @@ def cmd_download(args: argparse.Namespace) -> int:
         print(f"Error: {e}", file=sys.stderr)
         return 2
     print(f"Saved CSV to {path}")
-    _attempt_encrypted_backup()
+    _attempt_encrypted_backup(args.year)
     return 0
 
 
-def _attempt_encrypted_backup() -> None:
+def _attempt_encrypted_backup(year: int | None = None) -> None:
     """Create an encrypted backup with age, if configured.
 
     Looks for AGE_RECIPIENT or AGE_RECIPIENTS_FILE and the `age` executable.
@@ -72,7 +72,7 @@ def _attempt_encrypted_backup() -> None:
     if not sources:
         return
 
-    backups_dir = Path("backups")
+    backups_dir = Path("backups") / (str(year) if year is not None else "")
     ensure_dir(backups_dir)
 
     stamp = datetime.now().strftime("%Y%m%d-%H%M%S")

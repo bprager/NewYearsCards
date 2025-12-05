@@ -42,9 +42,9 @@ def test_attempt_encrypted_backup_creates_age_file(tmp_path, monkeypatch):
 
     monkeypatch.setattr("subprocess.run", fake_run)
 
-    cli_mod._attempt_encrypted_backup()
+    cli_mod._attempt_encrypted_backup(2025)
 
-    files = list((tmp_path / "backups").glob("*.tgz.age"))
+    files = list((tmp_path / "backups" / "2025").glob("*.tgz.age"))
     assert len(files) == 1
     assert files[0].stat().st_size > 0
 
@@ -59,14 +59,14 @@ def test_attempt_encrypted_backup_no_age_or_no_recipient_skips(tmp_path, monkeyp
     # No recipient, should skip immediately
     monkeypatch.delenv("AGE_RECIPIENT", raising=False)
     monkeypatch.delenv("AGE_RECIPIENTS_FILE", raising=False)
-    cli_mod._attempt_encrypted_backup()
-    assert not (tmp_path / "backups").exists()
+    cli_mod._attempt_encrypted_backup(2025)
+    assert not (tmp_path / "backups" / "2025").exists()
 
     # Recipient present but age missing -> skip
     monkeypatch.setenv("AGE_RECIPIENT", "age1abc")
     monkeypatch.setattr("shutil.which", lambda name: None)
-    cli_mod._attempt_encrypted_backup()
-    assert not (tmp_path / "backups").exists()
+    cli_mod._attempt_encrypted_backup(2025)
+    assert not (tmp_path / "backups" / "2025").exists()
 
 
 def test_attempt_encrypted_backup_uses_recipients_file(tmp_path, monkeypatch):
@@ -94,9 +94,9 @@ def test_attempt_encrypted_backup_uses_recipients_file(tmp_path, monkeypatch):
 
     monkeypatch.setattr("subprocess.run", fake_run)
 
-    cli_mod._attempt_encrypted_backup()
+    cli_mod._attempt_encrypted_backup(2025)
 
-    files = list((tmp_path / "backups").glob("*.tgz.age"))
+    files = list((tmp_path / "backups" / "2025").glob("*.tgz.age"))
     assert len(files) == 1
     argv = captured_args["argv"]
     # Should contain two -r entries for both recipients
