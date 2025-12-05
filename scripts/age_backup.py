@@ -11,6 +11,14 @@ import sys
 import tarfile
 
 
+# Optional .env support
+try:  # pragma: no cover - trivial import
+    from dotenv import load_dotenv
+except Exception:  # pragma: no cover
+    def load_dotenv(*_args, **_kwargs):  # type: ignore[no-untyped-def]
+        return False
+
+
 def tar_sources(sources: list[Path], out_tar_gz: Path) -> None:
     with tarfile.open(out_tar_gz, "w:gz") as tar:
         for src in sources:
@@ -42,6 +50,8 @@ def run_age_decrypt(in_file: Path, out_file: Path, identity: Path) -> None:
 
 
 def backup(args: argparse.Namespace) -> int:
+    # Load .env so AGE_* and directory overrides are available
+    load_dotenv()
     raw_dir = Path(os.getenv("RAW_DATA_DIR", "data/raw"))
     processed_dir = Path(os.getenv("PROCESSED_DATA_DIR", "data/processed"))
     backup_dir = Path(args.out_dir or "backups")
@@ -86,6 +96,8 @@ def backup(args: argparse.Namespace) -> int:
 
 
 def restore(args: argparse.Namespace) -> int:
+    # Load .env so AGE_IDENTITY etc. are available
+    load_dotenv()
     in_age = Path(args.input)
     if not in_age.exists():
         print(f"Input not found: {in_age}", file=sys.stderr)
@@ -129,4 +141,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

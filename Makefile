@@ -6,6 +6,13 @@ PYTHON ?= python3
 SRC := src/newyearscards
 TESTS := tests
 
+# Load variables from .env if present (for AGE_*, SHEET_URL, etc.)
+ifneq (,$(wildcard .env))
+include .env
+# Export all assignments (var names only)
+export $(shell sed -n 's/^\([A-Za-z_][A-Za-z0-9_]*\)=.*/\1/p' .env)
+endif
+
 help:
 	@echo "Available targets:"
 	@echo "  install         Install runtime deps (editable)"
@@ -87,9 +94,20 @@ run-build:
 	PYTHONPATH=src $(PYTHON) -m newyearscards.cli build-labels --year $(YEAR) $(ARGS)
 
 age-backup:
-	@[ -n "$(AGE_RECIPIENT)" ] || (echo "Error: AGE_RECIPIENT is required (public key)."; echo "Generate keys: age-keygen -o Keys/backup.agekey && age-keygen -y Keys/backup.agekey"; exit 1)
-	$(PYTHON) scripts/age_backup.py backup --recipient $(AGE_RECIPIENT) $(ARGS)
+	@if [ -z "$(AGE_RECIPIENT)$(AGE_RECIPIENTS_FILE)" ]; then \
+	  echo "Error: set AGE_RECIPIENT or AGE_RECIPIENTS_FILE (or configure them in .env)"; \
+	  echo "Hint: AGE_RECIPIENT='age1...' make age-backup"; \
+	  exit 1; \
+	fi
+	$(PYTHON) scripts/age_backup.py backup \
+	  $(if $(AGE_RECIPIENT),--recipient $(AGE_RECIPIENT),) \
+	  $(if $(AGE_RECIPIENTS_FILE),--recipients-file $(AGE_RECIPIENTS_FILE),) \
+	  $(ARGS)
 
 age-restore:
-	@[ -n "$(AGE_IDENTITY)" ] || (echo "Error: AGE_IDENTITY is required (private key path)."; exit 1)
+	@if [ -z "$(AGE_IDENTITY)" ]; then \
+	  echo "Error: set AGE_IDENTITY to your private key path (or configure in .env)"; \
+	  echo "Example: AGE_IDENTITY=Keys/backup.agekey make age-restore ARGS='--input backups/2025/addresses-...tgz.age'"; \
+	  exit 1; \
+	fi
 	$(PYTHON) scripts/age_backup.py restore --identity $(AGE_IDENTITY) $(ARGS)

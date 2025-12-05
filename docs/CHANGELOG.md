@@ -9,6 +9,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 No unreleased changes.
 
+## [1.1.0] - 2025-12-05
+
+### Added
+- Encrypted backups with age:
+  - Auto‑backup runs after successful `download`, writing `.tgz.age` to `backups/<year>/`.
+  - Unit tests for auto‑backup, including recipients file usage.
+  - Make targets `age-backup` and `age-restore` for manual workflows.
+- .env configuration for AGE_*:
+  - `AGE_RECIPIENT` / `AGE_RECIPIENTS_FILE` for encryption; `AGE_IDENTITY` for restore.
+  - Makefile now reads `.env` automatically; `age-backup` accepts recipients file without requiring single recipient.
+- Documentation:
+  - `docs/GOOGLE_AUTH.md` with service account setup and a “Test your setup” checklist.
+  - README compacted; clear Google Sheet one‑line headers and US example; service‑account key emphasized with official link.
+
+### Changed
+- Auto‑backup destination from `backups/` to `backups/<year>/`.
+- CLI loads `.env` before reading AGE_* for reliability; prints helpful skip notes when not configured.
+- US country aliases expanded (US/USA/United States/U.S. map to `US`).
+
+### Security
+- `.gitignore` excludes `data/raw/`, `data/processed/`, and CSVs; plaintext address data stays out of the repo.
+- `Keys/*.agekey` ignored; only encrypted `.age` files are intended for storage/commit.
+
 ## [1.0.0] - 2025-12-04
 
 This is the first complete, stable release.
