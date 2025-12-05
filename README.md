@@ -85,6 +85,15 @@ Dev extra includes Ruff.
 - `make coverage` (shows per-file, missing lines). CI enforces 90% overall and Codecov thresholds (project 90%, patch 95%).
 Private repos: set the Codecov badge token in README (see docs/CI.md).
 
+### Encrypted backups (age)
+- Exclude plain CSVs from Git: `data/raw/`, `data/processed/` are ignored by default.
+- Generate keys (once): `age-keygen -o Keys/backup.agekey && age-keygen -y Keys/backup.agekey`
+  - Keep `Keys/backup.agekey` private; the `-y` output is your public recipient.
+- Create backup: `make age-backup AGE_RECIPIENT='<age1...public-key>'`
+  - Writes `backups/addresses-<timestamp>.tgz.age` (safe to commit/store)
+- Restore backup: `make age-restore AGE_IDENTITY=Keys/backup.agekey ARGS='--input backups/addresses-....tgz.age --out-dir .'`
+- More: see `scripts/age_backup.py` for options.
+
 ### Makefile shortcuts
 
 - `make dev-install` – install dev extras (pytest, mypy)

@@ -18,6 +18,8 @@ help:
 	@echo "  release-notes   Generate release notes from CHANGELOG (VERSION=...)"
 	@echo "  run-download    Run CLI download without install (YEAR=YYYY)"
 	@echo "  run-build       Run CLI build-labels without install (YEAR=YYYY)"
+	@echo "  age-backup      Encrypt data/raw + data/processed to backups/*.age (AGE_RECIPIENT=...)"
+	@echo "  age-restore     Decrypt a backups/*.age file (AGE_IDENTITY=...)"
 
 install:
 	pip install -e .
@@ -83,3 +85,11 @@ run-download:
 run-build:
 	@[ -n "$(YEAR)" ] || (echo "Error: YEAR is required, e.g. make run-build YEAR=2025"; exit 1)
 	PYTHONPATH=src $(PYTHON) -m newyearscards.cli build-labels --year $(YEAR) $(ARGS)
+
+age-backup:
+	@[ -n "$(AGE_RECIPIENT)" ] || (echo "Error: AGE_RECIPIENT is required (public key)."; echo "Generate keys: age-keygen -o Keys/backup.agekey && age-keygen -y Keys/backup.agekey"; exit 1)
+	$(PYTHON) scripts/age_backup.py backup --recipient $(AGE_RECIPIENT) $(ARGS)
+
+age-restore:
+	@[ -n "$(AGE_IDENTITY)" ] || (echo "Error: AGE_IDENTITY is required (private key path)."; exit 1)
+	$(PYTHON) scripts/age_backup.py restore --identity $(AGE_IDENTITY) $(ARGS)

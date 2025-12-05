@@ -209,3 +209,11 @@ __marimo__/
 
 # Access keys
 Keys/*.json
+
+# Personal data (keep out of repo)
+data/raw/
+data/processed/
+data/**/*.csv
+
+# Age private keys
+Keys/*.agekey
