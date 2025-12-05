@@ -11,7 +11,7 @@ except Exception:
         return False
 
 
-KEY_PATH = "Keys/google-sheet-key.json"
+KEY_PATH = "keys/google-sheet-key.json"
 OUTPUT_CSV = "sheet.csv"
 SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]
 

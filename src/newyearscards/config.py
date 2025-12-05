@@ -14,7 +14,7 @@ except Exception:  # pragma: no cover - optional dependency at runtime
 DEFAULT_RAW_DIR = "data/raw"
 DEFAULT_PROCESSED_DIR = "data/processed"
 DEFAULT_TEMPLATES_PATH = "config/address_formats.yml"
-DEFAULT_KEY_PATH = "Keys/google-sheet-key.json"
+DEFAULT_KEY_PATH = "keys/google-sheet-key.json"
 
 
 @dataclass

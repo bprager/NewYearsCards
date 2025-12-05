@@ -14,7 +14,7 @@ Prepare New Year’s card envelopes: download the Google Sheet, format addresses
 
 ## Quick Start
 
-1. Create a Google service account and download its JSON key. Save it to `Keys/google-sheet-key.json` (or point `SERVICE_ACCOUNT_KEY` to it). Do not commit this file. Setup guide: https://docs.cloud.google.com/iam/docs/keys-create-delete (see also docs/GOOGLE_AUTH.md)
+1. Create a Google service account and download its JSON key. Save it to `keys/google-sheet-key.json` (or point `SERVICE_ACCOUNT_KEY` to it). Do not commit this file. Setup guide: https://docs.cloud.google.com/iam/docs/keys-create-delete (see also docs/GOOGLE_AUTH.md)
 2. Copy `.env.example` to `.env` and set variables.
    - Required:
      - `SHEET_URL="https://docs.google.com/spreadsheets/d/<id>/edit#gid=0"`
@@ -22,7 +22,7 @@ Prepare New Year’s card envelopes: download the Google Sheet, format addresses
      - `RAW_DATA_DIR` (default `data/raw`)
      - `PROCESSED_DATA_DIR` (default `data/processed`)
      - `ADDRESS_TEMPLATES` (default `config/address_formats.yml`)
-     - `SERVICE_ACCOUNT_KEY` (default `Keys/google-sheet-key.json`)
+     - `SERVICE_ACCOUNT_KEY` (default `keys/google-sheet-key.json`)
    Tip: Share the Sheet with the service account’s email so it can read it.
 
 Run from source (no install):
@@ -69,7 +69,7 @@ Tip: Use `uv run python` to avoid installing dev tools locally. If `--url` is om
 
 ## Credentials
 
-- Service account key: `Keys/google-sheet-key.json`
+- Service account key: `keys/google-sheet-key.json`
  - Create/manage keys: https://docs.cloud.google.com/iam/docs/keys-create-delete (more in docs/GOOGLE_AUTH.md)
 - `.env`:
   - `SHEET_URL="https://docs.google.com/spreadsheets/d/<id>/edit#gid=0"`
@@ -88,14 +88,14 @@ Private repos: set the Codecov badge token in README (see docs/CI.md).
 
 ### Encrypted backups (age)
 - Exclude plain CSVs from Git: `data/raw/`, `data/processed/` are ignored by default.
-- Generate keys (once): `age-keygen -o Keys/backup.agekey && age-keygen -y Keys/backup.agekey`
-  - Keep `Keys/backup.agekey` private; the `-y` output is your public recipient.
+- Generate keys (once): `age-keygen -o keys/backup.agekey && age-keygen -y keys/backup.agekey`
+  - Keep `keys/backup.agekey` private; the `-y` output is your public recipient.
 - Configure in `.env` (preferred):
-  - `AGE_RECIPIENT="age1...public-key"` (or `AGE_RECIPIENTS_FILE` with one recipient per line)
-  - For restore operations: set `AGE_IDENTITY` to the private key file path (do not store private key content in `.env`).
+  - `AGE_RECIPIENT="age1...public-key"` (or `AGE_RECIPIENTS_FILE` with one recipient per line, e.g. `keys/recipients.txt`)
+  - For restore operations: set `AGE_IDENTITY` to the private key file path (e.g. `keys/backup.agekey`; do not store private key content in `.env`).
 - Create backup: `make age-backup AGE_RECIPIENT='<age1...public-key>'` (or rely on `.env`)
   - Writes `backups/addresses-<timestamp>.tgz.age` (safe to commit/store)
-- Restore backup: `make age-restore AGE_IDENTITY=Keys/backup.agekey ARGS='--input backups/addresses-....tgz.age --out-dir .'`
+- Restore backup: `make age-restore AGE_IDENTITY=keys/backup.agekey ARGS='--input backups/addresses-....tgz.age --out-dir .'`
 - More: see `scripts/age_backup.py` for options.
 
 ### Makefile shortcuts

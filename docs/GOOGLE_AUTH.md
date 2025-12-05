@@ -24,8 +24,8 @@ Steps
    - Copy `.env.example` to `.env`
    - Set:
      - `SHEET_URL="https://docs.google.com/spreadsheets/d/<id>/edit#gid=<gid>"`
-     - Optionally set `SERVICE_ACCOUNT_KEY` (defaults to `Keys/google-sheet-key.json`)
-   - Place the JSON key at that path
+     - Optionally set `SERVICE_ACCOUNT_KEY` (defaults to `keys/google-sheet-key.json`)
+- Place the JSON key at that path (e.g., `keys/google-sheet-key.json`)
 
 5) Test from source (no install)
    - Download: `python newyearscards download --year 2025`
@@ -43,7 +43,7 @@ Security tips
 Test your setup
 - Verify `.env`:
   - `SHEET_URL` points to your Google Sheet (edit URL with `#gid=` is fine)
-  - `SERVICE_ACCOUNT_KEY` points to your JSON key (defaults to `Keys/google-sheet-key.json`)
+  - `SERVICE_ACCOUNT_KEY` points to your JSON key (defaults to `keys/google-sheet-key.json`)
 - Run from source (no install):
   - Download CSV: `python newyearscards download --year 2025`
     - Expected: `data/raw/2025/mailing_list.csv` exists and contains CSV data

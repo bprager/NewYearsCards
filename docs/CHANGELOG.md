@@ -30,7 +30,7 @@ No unreleased changes.
 
 ### Security
 - `.gitignore` excludes `data/raw/`, `data/processed/`, and CSVs; plaintext address data stays out of the repo.
-- `Keys/*.agekey` ignored; only encrypted `.age` files are intended for storage/commit.
+- `keys/*.agekey` ignored; only encrypted `.age` files are intended for storage/commit.
 
 ## [1.0.0] - 2025-12-04
 

@@ -35,7 +35,7 @@ flags:
 ignore:
   - tests/
   - docs/
-  - Keys/
+  - keys/
   - data/
   - templates/
   - newyearscards

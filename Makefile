@@ -107,7 +107,7 @@ age-backup:
 age-restore:
 	@if [ -z "$(AGE_IDENTITY)" ]; then \
 	  echo "Error: set AGE_IDENTITY to your private key path (or configure in .env)"; \
-	  echo "Example: AGE_IDENTITY=Keys/backup.agekey make age-restore ARGS='--input backups/2025/addresses-...tgz.age'"; \
+	  echo "Example: AGE_IDENTITY=keys/backup.agekey make age-restore ARGS='--input backups/2025/addresses-...tgz.age'"; \
 	  exit 1; \
 	fi
 	$(PYTHON) scripts/age_backup.py restore --identity $(AGE_IDENTITY) $(ARGS)
