@@ -88,7 +88,8 @@ def _attempt_encrypted_backup(year: int | None = None) -> None:
     backups_dir = Path("backups") / (str(year) if year is not None else "")
     ensure_dir(backups_dir)
 
-    stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    # Include microseconds to avoid collisions on rapid consecutive invocations
+    stamp = datetime.now().strftime("%Y%m%d-%H%M%S-%f")
     tmp_tar = backups_dir / f"addresses-{stamp}.tgz"
     out_age = backups_dir / f"addresses-{stamp}.tgz.age"
 

@@ -29,7 +29,7 @@ Run from source (no install):
 - Download: `python newyearscards download --year 2025`
 - Build: `python newyearscards build-labels --year 2025`
   (use `uv run python ...` if you prefer uv)
-  Note: after a successful download, an encrypted backup is created automatically (if `age` is installed and `AGE_RECIPIENT` or `AGE_RECIPIENTS_FILE` is set) under `backups/<year>/`.
+  Note: after each successful download, a new encrypted backup is created automatically (if `age` is installed and `AGE_RECIPIENT` or `AGE_RECIPIENTS_FILE` is set) under `backups/<year>/`, with a unique time‑stamped filename.
 
 Then, in Pages/Word, use a template from `templates/envelopes/`, and attach `data/processed/<year>/labels_for_mailmerge.csv` as the data source.
 
