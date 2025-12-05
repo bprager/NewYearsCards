@@ -1,8 +1,14 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import suppress
+from datetime import datetime
+import os
 from pathlib import Path
+import shutil
+import subprocess
 import sys
+import tarfile
 import tempfile
 
 from . import __version__
@@ -39,7 +45,65 @@ def cmd_download(args: argparse.Namespace) -> int:
         print(f"Error: {e}", file=sys.stderr)
         return 2
     print(f"Saved CSV to {path}")
+    _attempt_encrypted_backup()
     return 0
+
+
+def _attempt_encrypted_backup() -> None:
+    """Create an encrypted backup with age, if configured.
+
+    Looks for AGE_RECIPIENT or AGE_RECIPIENTS_FILE and the `age` executable.
+    Archives data/raw and data/processed (if present) into backups/*.tgz.age.
+    Never raises; prints a short status message on success or skip.
+    """
+    # Ensure age is available and recipients configured
+    recipient = os.getenv("AGE_RECIPIENT")
+    recipients_file = os.getenv("AGE_RECIPIENTS_FILE")
+    if not (recipient or recipients_file):
+        # Quietly skip unless user configured recipients
+        return
+    if shutil.which("age") is None:
+        print("Note: 'age' not found in PATH; skipping encrypted backup.", file=sys.stderr)
+        return
+
+    raw_dir = Path(os.getenv("RAW_DATA_DIR", "data/raw"))
+    processed_dir = Path(os.getenv("PROCESSED_DATA_DIR", "data/processed"))
+    sources = [p for p in (raw_dir, processed_dir) if p.exists()]
+    if not sources:
+        return
+
+    backups_dir = Path("backups")
+    ensure_dir(backups_dir)
+
+    stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    tmp_tar = backups_dir / f"addresses-{stamp}.tgz"
+    out_age = backups_dir / f"addresses-{stamp}.tgz.age"
+
+    try:
+        with tarfile.open(tmp_tar, "w:gz") as tar:
+            for src in sources:
+                tar.add(src, arcname=src.name)
+
+        # Build recipients
+        rec_args: list[str] = []
+        if recipient:
+            rec_args += ["-r", recipient]
+        if recipients_file and Path(recipients_file).exists():
+            for line in Path(recipients_file).read_text(encoding="utf-8").splitlines():
+                s = line.strip()
+                if s:
+                    rec_args += ["-r", s]
+        if not rec_args:
+            return
+
+        cmd = ["age", *rec_args, "-o", str(out_age), str(tmp_tar)]
+        subprocess.run(cmd, check=True)
+        print(f"Encrypted backup: {out_age}")
+    except Exception as e:  # pragma: no cover - best-effort
+        print(f"Note: encrypted backup failed: {e}", file=sys.stderr)
+    finally:
+        with suppress(Exception):
+            tmp_tar.unlink(missing_ok=True)
 
 
 def cmd_build_labels(args: argparse.Namespace) -> int:
