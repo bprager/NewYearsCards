@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 No unreleased changes.
 
+## [1.1.1] - 2025-12-05
+
+### Fixed
+- Ensure encrypted backup logic never creates `backups/<year>/` when encryption is disabled
+  (no `AGE_RECIPIENT`/`AGE_RECIPIENTS_FILE`) or when `age` is not present.
+- Kept `.env` loading strictly scoped to the current working directory to avoid
+  test leakage and accidental env overrides.
+
+### Internal
+- Synced `__version__` with `pyproject.toml` to `1.1.1`.
+- Minor test hardening and cleanup; all checks green.
+
 ## [1.1.0] - 2025-12-05
 
 ### Added

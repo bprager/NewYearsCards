@@ -17,10 +17,16 @@ from .config import ensure_dir, load_paths
 
 # Best-effort .env loading (keep optional like in sheets.py)
 try:  # pragma: no cover - trivial import
+    from pathlib import Path as _P
+
     from dotenv import load_dotenv as _real_load_dotenv
 
     def _load_env() -> bool:
-        return _real_load_dotenv()
+        # Only load a .env from the current working directory, not parents.
+        env_path = _P.cwd() / ".env"
+        if env_path.exists():
+            return _real_load_dotenv(dotenv_path=str(env_path))
+        return False
 except Exception:  # pragma: no cover
     def _load_env() -> bool:
         return False
