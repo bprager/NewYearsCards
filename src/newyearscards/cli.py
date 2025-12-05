@@ -15,6 +15,13 @@ from . import __version__
 from .addresses import build_labels
 from .config import ensure_dir, load_paths
 
+# Best-effort .env loading (keep optional like in sheets.py)
+try:  # pragma: no cover - trivial import
+    from dotenv import load_dotenv
+except Exception:  # pragma: no cover
+    def load_dotenv(*_args, **_kwargs):  # type: ignore[no-untyped-def]
+        return False
+
 
 def cmd_download(args: argparse.Namespace) -> int:
     """Download the Google Sheet into data/raw/<year>/mailing_list.csv.
@@ -56,11 +63,17 @@ def _attempt_encrypted_backup(year: int | None = None) -> None:
     Archives data/raw and data/processed (if present) into backups/*.tgz.age.
     Never raises; prints a short status message on success or skip.
     """
+    # Load .env so local AGE_* vars are available
+    load_dotenv()
+
     # Ensure age is available and recipients configured
     recipient = os.getenv("AGE_RECIPIENT")
     recipients_file = os.getenv("AGE_RECIPIENTS_FILE")
     if not (recipient or recipients_file):
-        # Quietly skip unless user configured recipients
+        print(
+            "Note: skipping encrypted backup; set AGE_RECIPIENT or AGE_RECIPIENTS_FILE to enable.",
+            file=sys.stderr,
+        )
         return
     if shutil.which("age") is None:
         print("Note: 'age' not found in PATH; skipping encrypted backup.", file=sys.stderr)
