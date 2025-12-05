@@ -90,7 +90,10 @@ Private repos: set the Codecov badge token in README (see docs/CI.md).
 - Exclude plain CSVs from Git: `data/raw/`, `data/processed/` are ignored by default.
 - Generate keys (once): `age-keygen -o Keys/backup.agekey && age-keygen -y Keys/backup.agekey`
   - Keep `Keys/backup.agekey` private; the `-y` output is your public recipient.
-- Create backup: `make age-backup AGE_RECIPIENT='<age1...public-key>'`
+- Configure in `.env` (preferred):
+  - `AGE_RECIPIENT="age1...public-key"` (or `AGE_RECIPIENTS_FILE` with one recipient per line)
+  - For restore operations: set `AGE_IDENTITY` to the private key file path (do not store private key content in `.env`).
+- Create backup: `make age-backup AGE_RECIPIENT='<age1...public-key>'` (or rely on `.env`)
   - Writes `backups/addresses-<timestamp>.tgz.age` (safe to commit/store)
 - Restore backup: `make age-restore AGE_IDENTITY=Keys/backup.agekey ARGS='--input backups/addresses-....tgz.age --out-dir .'`
 - More: see `scripts/age_backup.py` for options.
