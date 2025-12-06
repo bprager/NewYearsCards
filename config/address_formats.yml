@@ -50,3 +50,13 @@ US:
     - "{address2}"
     - "{city} {state} {zip}"
   uppercase_last_n_lines: 1
+
+# Thailand — combine state (district/province), city, and zip to keep within 5 lines
+TH:
+  lines:
+    - "{prefix} {first_name} {last_name}"
+    - "{address1}"
+    - "{address2}"
+    - "{state} {city} {zip}"
+    - "THAILAND"
+  uppercase_last_n_lines: 2

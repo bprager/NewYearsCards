@@ -242,6 +242,31 @@ def test_build_address_lines_french_polynesia():
     assert lines_pf2[-1] == "FRENCH POLYNESIA"
 
 
+def test_build_address_lines_thailand_and_aliases():
+    templates = addresses.load_templates(Path("config/address_formats.yml"))
+    th_row = {
+        "prefix": "Family",
+        "first_name": "Christel & Brad",
+        "last_name": "Demol",
+        "address1": "64/76 Sukhumvit Soi 11",
+        "address2": "Kallista Mansion 28D",
+        "state": "Watthana",
+        "city": "Bangkok",
+        "zip": "10110",
+        "country": "Thailand",
+    }
+    lines_th = addresses.build_address_lines(th_row, templates)
+    # Last line is THAILAND (uppercased).
+    # Previous line should contain state+city+zip and be uppercased.
+    assert lines_th[-1] == "THAILAND"
+    assert any("WATTHANA BANGKOK 10110" in line for line in lines_th)
+
+    # Alias 'TH' should resolve to Thailand as well
+    code, name = addresses.infer_country({"country": "TH"})
+    assert code == "TH"
+    assert name == "Thailand"
+
+
 def test_normalize_headers_with_extra_columns():
     raw = [
         "First Name",

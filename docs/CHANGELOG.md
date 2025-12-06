@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 No unreleased changes.
 
+## [1.1.2] - 2025-12-05
+
+### Added
+- Address template for Thailand (`TH`), combining district/province (`state`), city, and ZIP into one line
+  and uppercasing the last two lines per international addressing conventions.
+- Country inference aliases for Thailand: `Thailand`, `TH`.
+
+### Tests
+- Unit tests covering Thailand formatting and country inference.
+
 ## [1.1.1] - 2025-12-05
 
 ### Fixed

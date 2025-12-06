@@ -102,6 +102,8 @@ COUNTRY_ALIASES: dict[str, str] = {
     "polynésie française": "PF",
     "polynesie francaise": "PF",
     "pf": "PF",
+    "thailand": "TH",
+    "th": "TH",
     "united states": "US",
     "united states of america": "US",
     "usa": "US",
@@ -199,6 +201,7 @@ def infer_country(row: dict[str, str]) -> tuple[str, str]:
             "US": "United States",
             "UA": "Ukraine",
             "PF": "French Polynesia",
+            "TH": "Thailand",
         }.get(code, raw or code)
         return code, display
 
@@ -209,6 +212,8 @@ def infer_country(row: dict[str, str]) -> tuple[str, str]:
         return "FR", "France"
     if key in {"united states", "usa", "us", "united states of america"}:
         return "US", "United States"
+    if key in {"thailand", "th"}:
+        return "TH", "Thailand"
 
     # Fall back to given text, or empty
     return (raw or "", raw or "")
