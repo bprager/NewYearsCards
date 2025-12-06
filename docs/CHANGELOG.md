@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 No unreleased changes.
 
+## [1.1.3] - 2025-12-05
+
+### Added
+- Country alias for Thailand in Thai script: `ประเทศไทย` → `TH`. Ensures Thai addresses use the `TH`
+  template when users provide the country in Thai.
+
+### Tests
+- Added unit test for the Thai-script alias, confirming `ประเทศไทย` maps to `TH` and display name
+  `Thailand`.
+
 ## [1.1.2] - 2025-12-05
 
 ### Added

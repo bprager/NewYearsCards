@@ -267,6 +267,13 @@ def test_build_address_lines_thailand_and_aliases():
     assert name == "Thailand"
 
 
+def test_infer_country_aliases_thailand_unicode():
+    # Thai script for Thailand should resolve correctly
+    code, name = addresses.infer_country({"country": "ประเทศไทย"})
+    assert code == "TH"
+    assert name == "Thailand"
+
+
 def test_normalize_headers_with_extra_columns():
     raw = [
         "First Name",

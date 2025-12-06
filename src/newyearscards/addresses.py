@@ -104,6 +104,7 @@ COUNTRY_ALIASES: dict[str, str] = {
     "pf": "PF",
     "thailand": "TH",
     "th": "TH",
+    "ประเทศไทย": "TH",
     "united states": "US",
     "united states of america": "US",
     "usa": "US",
