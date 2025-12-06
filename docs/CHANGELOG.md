@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 No unreleased changes.
 
+## [1.1.4] - 2025-12-05
+
+### Fixed
+- Auto‑encrypted backup: resolve recipients (ENV or file) before creating any backup directories
+  or temp files; provide clear skip messages when recipients are missing or `age` is not found.
+- Ensures a backup is created for every successful `download` when properly configured.
+
+### Tests
+- Added unit test for missing `AGE_RECIPIENTS_FILE` path to ensure clean skip without creating
+  `backups/<year>/`.
+
 ## [1.1.3] - 2025-12-05
 
 ### Added
