@@ -41,10 +41,10 @@ Address lines are generated using templates in `config/address_formats.yml`. Emp
 ## Google Sheet Format
 
 Use this single header row to ensure automatic mapping:
-`Prefix, First Name, Last Name, Address 1, Address 2, City, State, Zip Code, Country`
+`Prefix, Last Name, First Name, Address 1, Address 2, City, State, Zip Code, Country`
 
 Example row (US):
-`", Bernd, Prager, 504 S Sierra Bonita Ave, , Los Angeles, CA, 90036-3205, US"`
+`"", Prager, Bernd, 504 S Sierra Bonita Ave, "", Los Angeles, CA, 90036-3205, US`
 
 Notes:
 - Common header variants (e.g., `FirstName`, `Postal Code`, `Address1`) are normalized, but the header row above is recommended.
