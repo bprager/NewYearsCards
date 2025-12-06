@@ -69,6 +69,26 @@ def test_attempt_encrypted_backup_no_age_or_no_recipient_skips(tmp_path, monkeyp
     assert not (tmp_path / "backups" / "2025").exists()
 
 
+def test_attempt_encrypted_backup_recipients_file_missing_skips_cleanly(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    _write_dummy_data(tmp_path)
+
+    # Directories
+    monkeypatch.setenv("RAW_DATA_DIR", str(tmp_path / "data" / "raw"))
+    monkeypatch.setenv("PROCESSED_DATA_DIR", str(tmp_path / "data" / "processed"))
+
+    # Configure a recipients file path that does not exist
+    rec_file = tmp_path / "no_such_recipients.txt"
+    monkeypatch.setenv("AGE_RECIPIENTS_FILE", str(rec_file))
+
+    # Pretend age exists so we only test the missing recipients scenario
+    monkeypatch.setattr("shutil.which", lambda name: "/usr/bin/age" if name == "age" else None)
+
+    cli_mod._attempt_encrypted_backup(2025)
+    # Should not create the backups/<year>/ directory at all
+    assert not (tmp_path / "backups" / "2025").exists()
+
+
 def test_attempt_encrypted_backup_uses_recipients_file(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     _write_dummy_data(tmp_path)

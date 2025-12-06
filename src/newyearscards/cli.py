@@ -75,15 +75,35 @@ def _attempt_encrypted_backup(year: int | None = None) -> None:
     # Load .env so local AGE_* vars are available
     _load_env()
 
-    # Ensure age is available and recipients configured
+    # Ensure recipients configured first (and file exists / has content if provided)
     recipient = os.getenv("AGE_RECIPIENT")
     recipients_file = os.getenv("AGE_RECIPIENTS_FILE")
-    if not (recipient or recipients_file):
-        print(
-            "Note: skipping encrypted backup; set AGE_RECIPIENT or AGE_RECIPIENTS_FILE to enable.",
-            file=sys.stderr,
+
+    rec_args: list[str] = []
+    if recipient:
+        rec_args += ["-r", recipient]
+    missing_file_notice = False
+    if recipients_file:
+        rf = Path(recipients_file)
+        if rf.exists():
+            for line in rf.read_text(encoding="utf-8").splitlines():
+                s = line.strip()
+                if s:
+                    rec_args += ["-r", s]
+        else:
+            missing_file_notice = True
+
+    if not rec_args:
+        msg = (
+            "Note: skipping encrypted backup; no recipients configured. "
+            "Set AGE_RECIPIENT or AGE_RECIPIENTS_FILE."
         )
+        if missing_file_notice:
+            msg += f" (File not found: {recipients_file})"
+        print(msg, file=sys.stderr)
         return
+
+    # Ensure age is available after we confirmed recipients
     if shutil.which("age") is None:
         print("Note: 'age' not found in PATH; skipping encrypted backup.", file=sys.stderr)
         return
@@ -106,18 +126,6 @@ def _attempt_encrypted_backup(year: int | None = None) -> None:
         with tarfile.open(tmp_tar, "w:gz") as tar:
             for src in sources:
                 tar.add(src, arcname=src.name)
-
-        # Build recipients
-        rec_args: list[str] = []
-        if recipient:
-            rec_args += ["-r", recipient]
-        if recipients_file and Path(recipients_file).exists():
-            for line in Path(recipients_file).read_text(encoding="utf-8").splitlines():
-                s = line.strip()
-                if s:
-                    rec_args += ["-r", s]
-        if not rec_args:
-            return
 
         cmd = ["age", *rec_args, "-o", str(out_age), str(tmp_tar)]
         subprocess.run(cmd, check=True)
