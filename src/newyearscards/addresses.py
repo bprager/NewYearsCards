@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 import csv
-import importlib
 from pathlib import Path
 import re
 from typing import Any, TypedDict, cast
@@ -129,8 +128,10 @@ def normalize_headers(headers: Iterable[str]) -> list[str]:
 
 
 yaml_module: Any | None
-try:
-    yaml_module = importlib.import_module("yaml")
+try:  # Prefer a direct import so tooling (deptry) sees usage
+    import yaml as _yaml
+
+    yaml_module = _yaml
 except Exception:  # pragma: no cover
     yaml_module = None
 

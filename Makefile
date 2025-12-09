@@ -67,7 +67,7 @@ deptry:
 	@if command -v deptry >/dev/null 2>&1; then \
 		deptry src/newyearscards \
 		  --pep621-dev-dependency-groups dev \
-		  --package-module-name-map PyYAML=yaml; \
+		  --package-module-name-map PyYAML=yaml,python-dotenv=dotenv,google-auth=google; \
 	else \
 		echo "deptry not installed; install with 'pip install deptry' or dev extras"; \
 		echo "skipping deptry"; \

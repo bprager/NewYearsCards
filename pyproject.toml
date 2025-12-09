@@ -45,6 +45,7 @@ omit = [
 [[tool.mypy.overrides]]
 module = [
   "dotenv",
+  "yaml",
 ]
 ignore_missing_imports = true
 
