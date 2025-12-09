@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version (e.g., 1.1.5)"
+        required: true
+        type: string
 
 jobs:
   generate:
@@ -22,9 +28,12 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Set VERSION variable
+        run: echo "VERSION=${{ github.event.inputs.version || github.ref_name }}" >> $GITHUB_ENV
+
       - name: Generate release notes from CHANGELOG
         run: |
-          python scripts/generate_release_notes.py --version "${GITHUB_REF_NAME#v}" --out release_notes.md
+          python scripts/generate_release_notes.py --version "$VERSION" --out release_notes.md
 
       - name: Create or update GitHub Release
         uses: softprops/action-gh-release@v2
@@ -35,7 +44,7 @@ jobs:
 
       - name: Update version badge
         run: |
-          python scripts/update_version_badge.py --version "${GITHUB_REF_NAME#v}"
+          python scripts/update_version_badge.py --version "$VERSION"
 
       - name: Commit and push badge if changed (to main)
         run: |
@@ -45,6 +54,6 @@ jobs:
             git config user.name "github-actions"
             git config user.email "github-actions@github.com"
             git add docs/badges/version.svg
-            git commit -m "docs(badge): update version badge for ${GITHUB_REF_NAME}"
+            git commit -m "docs(badge): update version badge for v$VERSION"
             git push origin HEAD:main
           fi
