@@ -65,7 +65,9 @@ lint:
 
 deptry:
 	@if command -v deptry >/dev/null 2>&1; then \
-		deptry src/newyearscards; \
+		deptry src/newyearscards \
+		  --pep621-dev-dependency-groups dev \
+		  --package-module-name-map PyYAML=yaml; \
 	else \
 		echo "deptry not installed; install with 'pip install deptry' or dev extras"; \
 		echo "skipping deptry"; \
