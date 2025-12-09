@@ -9,6 +9,7 @@ dependencies = [
     "python-dotenv>=1.2.1",
     "requests>=2.32.5",
     "PyYAML>=6.0.2",
+    "deptry>=0.24.0",
 ]
 
 [project.scripts]
@@ -23,9 +24,7 @@ dev = [
     "deptry>=0.20.0",
 ]
 
-[tool.deptry]
-# Audit only first-party package code; tests are excluded to avoid false positives
-packages = ["src/newyearscards"]
+## Deptry uses CLI roots; no config needed currently.
 
 [tool.mypy]
 python_version = "3.12"

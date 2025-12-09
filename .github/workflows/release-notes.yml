@@ -11,8 +11,11 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout
+      - name: Checkout default branch
         uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -34,7 +37,7 @@ jobs:
         run: |
           python scripts/update_version_badge.py --version "${GITHUB_REF_NAME#v}"
 
-      - name: Commit and push badge if changed
+      - name: Commit and push badge if changed (to main)
         run: |
           if git diff --quiet; then
             echo "No changes to commit";
@@ -43,5 +46,5 @@ jobs:
             git config user.email "github-actions@github.com"
             git add docs/badges/version.svg
             git commit -m "docs(badge): update version badge for ${GITHUB_REF_NAME}"
-            git push
+            git push origin HEAD:main
           fi
