@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 No unreleased changes.
 
+## [1.1.5] - 2025-12-06
+
+### Added
+- Integrated Deptry into the development chain:
+  - Added Deptry to dev extras and a `make deptry` target.
+  - Included Deptry in `make check` and CI (runs after installing dev deps).
+
+### Changed
+- Removed unused runtime dependency `google-auth-httplib2` (was not imported).
+
+### CI
+- CI pipeline now runs Deptry to audit missing/obsolete dependencies.
+
 ## [1.1.4] - 2025-12-05
 
 ### Fixed
