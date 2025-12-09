@@ -27,6 +27,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .[dev]
 
+      - name: Deptry dependency audit
+        run: make deptry
+
       - name: Lint, type-check, and test
         run: make check
 

@@ -1,6 +1,6 @@
 # Simple developer commands
 
-.PHONY: help install dev-install test typecheck lint format check release-notes
+.PHONY: help install dev-install test typecheck lint format deptry check release-notes
 
 PYTHON ?= python3
 SRC := src/newyearscards
@@ -21,7 +21,8 @@ help:
 	@echo "  typecheck       Run mypy on source"
 	@echo "  lint            Run Ruff if available (optional)"
 	@echo "  format          Run Ruff formatter if available (optional)"
-	@echo "  check           Lint + typecheck + tests"
+	@echo "  deptry          Dependency audit (missing/obsolete)"
+	@echo "  check           Lint + deptry + typecheck + tests"
 	@echo "  release-notes   Generate release notes from CHANGELOG (VERSION=...)"
 	@echo "  run-download    Run CLI download without install (YEAR=YYYY)"
 	@echo "  run-build       Run CLI build-labels without install (YEAR=YYYY)"
@@ -62,6 +63,14 @@ lint:
 		echo "skipping lint"; \
 	fi
 
+deptry:
+	@if command -v deptry >/dev/null 2>&1; then \
+		deptry src/newyearscards; \
+	else \
+		echo "deptry not installed; install with 'pip install deptry' or dev extras"; \
+		echo "skipping deptry"; \
+	fi
+
 format:
 	@if command -v ruff >/dev/null 2>&1; then \
 		ruff format $(SRC) $(TESTS); \
@@ -73,6 +82,9 @@ format:
 check:
 	@echo "==> Ruff lint"
 	@$(MAKE) --no-print-directory lint
+	@echo
+	@echo "==> Deptry dependency audit"
+	@$(MAKE) --no-print-directory deptry
 	@echo
 	@echo "==> Mypy typecheck"
 	@$(MAKE) --no-print-directory typecheck
