@@ -9,7 +9,7 @@ default:
 
 DE:
   lines:
-    - "{prefix} {last_name}"
+    - "{prefix} {first_name} {last_name}"
     - "{address1}"
     - "{address2}"
     - "{zip} {city}"
@@ -27,7 +27,7 @@ FR:
 
 UA:
   lines:
-    - "{first_name} {last_name}"
+    - "{prefix} {first_name} {last_name}"
     - "{address1}"
     - "{address2}"
     - "{city}"
